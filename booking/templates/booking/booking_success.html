@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Booking Confirmed | MediCare</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: #f4f7fb;
+        }
+
+        .card {
+            width: 500px;
+            max-width: 90%;
+
+            background: white;
+
+            padding: 45px;
+
+            border-radius: 20px;
+
+            text-align: center;
+
+            box-shadow:
+                0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .success-icon {
+            width: 75px;
+            height: 75px;
+
+            margin: auto auto 25px;
+
+            background: #dcfce7;
+
+            border-radius: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 35px;
+        }
+
+        h1 {
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .details {
+            background: #f8fafc;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            text-align: left;
+
+            margin-bottom: 25px;
+        }
+
+        .details p {
+            margin: 10px 0;
+        }
+
+        .label {
+            color: #64748b;
+        }
+
+        .button {
+            display: block;
+
+            text-decoration: none;
+
+            background: #2563eb;
+            color: white;
+
+            padding: 14px;
+
+            border-radius: 9px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="card">
+
+    <div class="success-icon">
+        ✓
+    </div>
+
+
+    <h1>
+        Appointment Booked!
+    </h1>
+
+
+    <p class="subtitle">
+
+        Your appointment request has been successfully created.
+
+    </p>
+
+
+    <div class="details">
+
+        <p>
+
+            <span class="label">
+                Doctor:
+            </span>
+
+            <strong>
+                Dr. {{ appointment.doctor.name }}
+            </strong>
+
+        </p>
+
+
+        <p>
+
+            <span class="label">
+                Date:
+            </span>
+
+            <strong>
+                {{ appointment.appointment_date }}
+            </strong>
+
+        </p>
+
+
+        <p>
+
+            <span class="label">
+                Time:
+            </span>
+
+            <strong>
+                {{ appointment.appointment_time|time:"h:i A" }}
+            </strong>
+
+        </p>
+
+
+        <p>
+
+            <span class="label">
+                Status:
+            </span>
+
+            <strong>
+                {{ appointment.status|title }}
+            </strong>
+
+        </p>
+
+    </div>
+
+
+    <a
+        href="{% url 'doctor_list' %}"
+        class="button"
+    >
+
+        Book Another Appointment
+
+    </a>
+
+</div>
+
+
+</body>
+</html>

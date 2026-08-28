@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Doctor Login | MediCare</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background: #f3f5f9;
+
+            color: #1e293b;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 30px;
+
+        }
+
+
+        .page {
+
+            width: 100%;
+
+            max-width: 1100px;
+
+            min-height: 650px;
+
+            background: white;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 20px;
+
+            display: grid;
+
+            grid-template-columns: 42% 58%;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 20px 60px rgba(15, 23, 42, 0.10);
+
+        }
+
+
+        /* LEFT PANEL */
+
+        .sidebar {
+
+            background: #172033;
+
+            color: white;
+
+            padding: 50px 45px;
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 25px;
+
+            font-weight: bold;
+
+            margin-bottom: 70px;
+
+        }
+
+
+        .logo-icon {
+
+            width: 42px;
+
+            height: 42px;
+
+            border-radius: 12px;
+
+            background: #2563eb;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-size: 24px;
+
+        }
+
+
+        .brand span {
+
+            color: #60a5fa;
+
+        }
+
+
+        .portal-label {
+
+            color: #60a5fa;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .sidebar h1 {
+
+            font-size: 36px;
+
+            line-height: 1.25;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .sidebar-description {
+
+            color: #aeb8c8;
+
+            line-height: 1.7;
+
+            font-size: 15px;
+
+            margin-bottom: 50px;
+
+        }
+
+
+        .features {
+
+            margin-top: auto;
+
+        }
+
+
+        .feature {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            padding: 16px 0;
+
+            border-top:
+                1px solid rgba(255,255,255,0.08);
+
+        }
+
+
+        .feature-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            border-radius: 10px;
+
+            background: #222e45;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            color: #60a5fa;
+
+            font-size: 18px;
+
+        }
+
+
+        .feature-text {
+
+            font-size: 14px;
+
+            color: #cbd5e1;
+
+        }
+
+
+
+        /* RIGHT PANEL */
+
+        .content {
+
+            padding: 70px 80px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+        }
+
+
+        .mobile-brand {
+
+            display: none;
+
+        }
+
+
+        .content h2 {
+
+            font-size: 32px;
+
+            margin-bottom: 10px;
+
+            color: #172033;
+
+        }
+
+
+        .subtitle {
+
+            color: #64748b;
+
+            font-size: 15px;
+
+            margin-bottom: 40px;
+
+        }
+
+
+        .form-group {
+
+            margin-bottom: 22px;
+
+        }
+
+
+        label {
+
+            display: block;
+
+            margin-bottom: 9px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #334155;
+
+        }
+
+
+        input {
+
+            width: 100%;
+
+            padding: 15px 16px;
+
+            border: 1px solid #d8dee8;
+
+            border-radius: 9px;
+
+            font-size: 15px;
+
+            color: #1e293b;
+
+            transition: 0.2s;
+
+        }
+
+
+        input::placeholder {
+
+            color: #94a3b8;
+
+        }
+
+
+        input:focus {
+
+            outline: none;
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.10);
+
+        }
+
+
+        button {
+
+            width: 100%;
+
+            border: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 16px;
+
+            border-radius: 9px;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            margin-top: 8px;
+
+            transition: 0.2s;
+
+        }
+
+
+        button:hover {
+
+            background: #1d4ed8;
+
+        }
+
+
+        .divider {
+
+            height: 1px;
+
+            background: #e5e7eb;
+
+            margin: 28px 0 20px;
+
+        }
+
+
+        .back {
+
+            display: block;
+
+            text-align: center;
+
+            color: #64748b;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+        }
+
+
+        .back:hover {
+
+            color: #2563eb;
+
+        }
+
+
+
+        /* TABLET */
+
+        @media (max-width: 900px) {
+
+            .page {
+
+                grid-template-columns: 38% 62%;
+
+            }
+
+
+            .sidebar {
+
+                padding: 40px 30px;
+
+            }
+
+
+            .content {
+
+                padding: 50px;
+
+            }
+
+
+            .sidebar h1 {
+
+                font-size: 30px;
+
+            }
+
+        }
+
+
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+            body {
+
+                padding: 15px;
+
+                align-items: flex-start;
+
+            }
+
+
+            .page {
+
+                display: block;
+
+                min-height: auto;
+
+                margin-top: 20px;
+
+            }
+
+
+            .sidebar {
+
+                display: none;
+
+            }
+
+
+            .content {
+
+                padding: 40px 25px;
+
+            }
+
+
+            .mobile-brand {
+
+                display: flex;
+
+                align-items: center;
+
+                gap: 10px;
+
+                font-size: 22px;
+
+                font-weight: bold;
+
+                color: #172033;
+
+                margin-bottom: 45px;
+
+            }
+
+
+            .mobile-logo {
+
+                width: 38px;
+
+                height: 38px;
+
+                background: #2563eb;
+
+                color: white;
+
+                border-radius: 10px;
+
+                display: flex;
+
+                align-items: center;
+
+                justify-content: center;
+
+            }
+
+
+            .content h2 {
+
+                font-size: 28px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+    <!-- LEFT SIDE -->
+
+    <section class="sidebar">
+
+
+        <div class="brand">
+
+            <div class="logo-icon">
+                +
+            </div>
+
+            <div>
+                Medi<span>Care</span>
+            </div>
+
+        </div>
+
+
+        <div class="portal-label">
+
+            Doctor Portal
+
+        </div>
+
+
+        <h1>
+
+            Manage your practice with confidence.
+
+        </h1>
+
+
+        <p class="sidebar-description">
+
+            Access your appointments, manage your availability,
+            schedule breaks and keep track of your working days
+            from one secure workspace.
+
+        </p>
+
+
+        <div class="features">
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    ▦
+                </div>
+
+                <div class="feature-text">
+
+                    Appointment Management
+
+                </div>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    ◷
+                </div>
+
+                <div class="feature-text">
+
+                    Availability & Working Hours
+
+                </div>
+
+            </div>
+
+
+            <div class="feature">
+
+                <div class="feature-icon">
+                    ▤
+                </div>
+
+                <div class="feature-text">
+
+                    Break & Leave Management
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- RIGHT SIDE -->
+
+    <section class="content">
+
+
+        <div class="mobile-brand">
+
+            <div class="mobile-logo">
+                +
+            </div>
+
+            MediCare
+
+        </div>
+
+
+        <h2>
+
+            Doctor Login
+
+        </h2>
+
+
+        <p class="subtitle">
+
+            Enter your professional details to access your dashboard.
+
+        </p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <div class="form-group">
+
+                <label>
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Professional Email
+                </label>
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="doctor@example.com"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label>
+                    Specialization
+                </label>
+
+                <input
+                    type="text"
+                    name="specialization"
+                    placeholder="e.g. Cardiology"
+                    required
+                >
+
+            </div>
+
+
+
+            <button type="submit">
+
+                Continue to Dashboard →
+
+            </button>
+
+
+        </form>
+
+
+        <div class="divider"></div>
+
+
+        <a
+            href="/"
+            class="back"
+        >
+
+            ← Back to Home
+
+        </a>
+
+
+    </section>
+
+
+</div>
+
+
+</body>
+
+</html>

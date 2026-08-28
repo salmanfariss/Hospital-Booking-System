@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Appointments | MediCare</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f3f5f9;
+            color: #1f2937;
+        }
+
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+
+            width: 260px;
+            height: 100vh;
+
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            background: #172033;
+
+            padding: 28px 18px;
+
+        }
+
+
+        .brand {
+
+            color: white;
+
+            font-size: 24px;
+            font-weight: 700;
+
+            padding: 0 12px;
+
+            margin-bottom: 45px;
+
+        }
+
+
+        .brand span {
+            color: #4f8cff;
+        }
+
+
+        .doctor-profile {
+
+            background: #222e45;
+
+            padding: 18px;
+
+            border-radius: 12px;
+
+            margin-bottom: 35px;
+
+        }
+
+
+        .doctor-avatar {
+
+            width: 48px;
+            height: 48px;
+
+            border-radius: 50%;
+
+            background: #4f8cff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+
+            font-weight: bold;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .doctor-profile h3 {
+
+            color: white;
+
+            font-size: 15px;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .doctor-profile p {
+
+            color: #94a3b8;
+
+            font-size: 13px;
+
+        }
+
+
+        .menu a {
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            color: #aeb8c8;
+
+            text-decoration: none;
+
+            padding: 13px 14px;
+
+            border-radius: 9px;
+
+            margin-bottom: 8px;
+
+            font-size: 14px;
+
+        }
+
+
+        .menu a:hover,
+        .menu a.active {
+
+            background: #2563eb;
+
+            color: white;
+
+        }
+
+
+        .logout {
+
+            position: absolute;
+
+            bottom: 30px;
+
+            left: 18px;
+            right: 18px;
+
+        }
+
+
+        .logout a {
+
+            display: block;
+
+            color: #f87171;
+
+            text-decoration: none;
+
+            padding: 12px;
+
+        }
+
+
+        /* ================= MAIN ================= */
+
+        .main {
+
+            margin-left: 260px;
+
+            min-height: 100vh;
+
+            padding: 35px 45px;
+
+        }
+
+
+        .topbar {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 30px;
+
+        }
+
+
+        .page-title h1 {
+
+            font-size: 28px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .page-title p {
+
+            color: #6b7280;
+
+            font-size: 14px;
+
+        }
+
+
+        .dashboard-btn {
+
+            text-decoration: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 12px 18px;
+
+            border-radius: 9px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+        }
+
+
+        /* ================= SUMMARY ================= */
+
+        .summary {
+
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .summary-card {
+
+            background: white;
+
+            border: 1px solid #edf0f5;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+        }
+
+
+        .summary-card p {
+
+            color: #64748b;
+
+            font-size: 13px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .summary-card h2 {
+
+            font-size: 28px;
+
+        }
+
+
+        /* ================= TABLE ================= */
+
+        .card {
+
+            background: white;
+
+            border: 1px solid #edf0f5;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+        }
+
+
+        .card-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 22px 24px;
+
+            border-bottom: 1px solid #edf0f5;
+
+        }
+
+
+        .card-header h2 {
+
+            font-size: 18px;
+
+        }
+
+
+        .appointment-count {
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            padding: 6px 10px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        .table-container {
+
+            overflow-x: auto;
+
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+        }
+
+
+        th {
+
+            text-align: left;
+
+            padding: 15px 24px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            background: #fafbfc;
+
+        }
+
+
+        td {
+
+            padding: 17px 24px;
+
+            border-top: 1px solid #f1f5f9;
+
+            font-size: 14px;
+
+        }
+
+
+        .patient-info {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
+        .patient-avatar {
+
+            width: 40px;
+            height: 40px;
+
+            border-radius: 50%;
+
+            background: #e0e7ff;
+
+            color: #4f46e5;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-weight: bold;
+
+        }
+
+
+        .patient-name {
+
+            font-weight: 600;
+
+            margin-bottom: 4px;
+
+        }
+
+
+        .patient-email {
+
+            font-size: 12px;
+
+            color: #94a3b8;
+
+        }
+
+
+        /* ================= STATUS ================= */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+        }
+
+
+        .pending {
+
+            background: #fef3c7;
+
+            color: #b45309;
+
+        }
+
+
+        .confirmed {
+
+            background: #dbeafe;
+
+            color: #2563eb;
+
+        }
+
+
+        .completed {
+
+            background: #dcfce7;
+
+            color: #15803d;
+
+        }
+
+
+        .cancelled {
+
+            background: #fee2e2;
+
+            color: #dc2626;
+
+        }
+
+
+        /* ================= ACTIONS ================= */
+
+        .actions {
+
+            display: flex;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .actions form {
+
+            margin: 0;
+
+        }
+
+
+        .btn {
+
+            border: none;
+
+            padding: 8px 12px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        .confirm-btn {
+
+            background: #2563eb;
+
+            color: white;
+
+        }
+
+
+        .complete-btn {
+
+            background: #16a34a;
+
+            color: white;
+
+        }
+
+
+        .cancel-btn {
+
+            background: #fee2e2;
+
+            color: #dc2626;
+
+        }
+
+
+        /* ================= EMPTY ================= */
+
+        .empty {
+
+            padding: 70px 20px;
+
+            text-align: center;
+
+        }
+
+
+        .empty-icon {
+
+            width: 64px;
+
+            height: 64px;
+
+            margin: 0 auto 18px;
+
+            border-radius: 50%;
+
+            background: #eff6ff;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 28px;
+
+        }
+
+
+        .empty h2 {
+
+            font-size: 20px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .empty p {
+
+            color: #94a3b8;
+
+            font-size: 14px;
+
+        }
+
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1100px) {
+
+            .summary {
+
+                grid-template-columns: repeat(2, 1fr);
+
+            }
+
+        }
+
+
+        @media (max-width: 750px) {
+
+            .sidebar {
+
+                width: 70px;
+
+                padding: 20px 8px;
+
+            }
+
+
+            .brand {
+
+                font-size: 0;
+
+                padding: 0;
+
+            }
+
+
+            .brand::before {
+
+                content: "M";
+
+                font-size: 24px;
+
+            }
+
+
+            .doctor-profile {
+
+                display: none;
+
+            }
+
+
+            .menu a {
+
+                justify-content: center;
+
+                font-size: 0;
+
+            }
+
+
+            .menu a span {
+
+                font-size: 18px;
+
+            }
+
+
+            .logout {
+
+                display: none;
+
+            }
+
+
+            .main {
+
+                margin-left: 70px;
+
+                padding: 25px 20px;
+
+            }
+
+
+            .summary {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .topbar {
+
+                align-items: flex-start;
+
+                gap: 15px;
+
+            }
+
+
+            table {
+
+                min-width: 750px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<aside class="sidebar">
+
+
+    <div class="brand">
+
+        Medi<span>Care</span>
+
+    </div>
+
+
+    <div class="doctor-profile">
+
+
+        <div class="doctor-avatar">
+
+            DR
+
+        </div>
+
+
+        <h3>
+
+            Dr. {{ doctor.name }}
+
+        </h3>
+
+
+        <p>
+
+            {{ doctor.specialization }}
+
+        </p>
+
+
+    </div>
+
+
+    <nav class="menu">
+
+
+        <a href="{% url 'doctor_dashboard' %}">
+
+            <span>▦</span>
+
+            Dashboard
+
+        </a>
+
+
+        <a
+            href="{% url 'doctor_appointments' %}"
+            class="active"
+        >
+
+            <span>▤</span>
+
+            Appointments
+
+        </a>
+
+
+        <a href="{% url 'manage_availability' %}">
+
+            <span>◷</span>
+
+            Manage Availability
+
+        </a>
+
+
+        <a href="{% url 'apply_leave' %}">
+
+            <span>◫</span>
+
+            Apply Leave
+
+        </a>
+
+
+    </nav>
+
+
+    <div class="logout">
+
+        <a href="{% url 'doctor_logout' %}">
+
+            ← Logout
+
+        </a>
+
+    </div>
+
+
+</aside>
+
+
+
+<main class="main">
+
+
+    <div class="topbar">
+
+
+        <div class="page-title">
+
+            <h1>
+
+                Appointments
+
+            </h1>
+
+            <p>
+
+                Manage and update your patient appointments.
+
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'doctor_dashboard' %}"
+            class="dashboard-btn"
+        >
+
+            ← Dashboard
+
+        </a>
+
+
+    </div>
+
+
+
+    <div class="summary">
+
+
+        <div class="summary-card">
+
+            <p>Total Appointments</p>
+
+            <h2>
+
+                {{ appointments|length }}
+
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Pending</p>
+
+            <h2>
+
+                {% for appointment in appointments %}
+                    {% if appointment.status == "pending" %}
+                    {% endif %}
+                {% endfor %}
+
+                —
+
+            </h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Confirmed</p>
+
+            <h2>—</h2>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <p>Completed</p>
+
+            <h2>—</h2>
+
+        </div>
+
+
+    </div>
+
+
+
+    <section class="card">
+
+
+        <div class="card-header">
+
+
+            <h2>
+
+                All Appointments
+
+            </h2>
+
+
+            <div class="appointment-count">
+
+                {{ appointments|length }} Total
+
+            </div>
+
+
+        </div>
+
+
+
+        {% if appointments %}
+
+
+        <div class="table-container">
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>Patient</th>
+
+                        <th>Date</th>
+
+                        <th>Time</th>
+
+                        <th>Status</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    {% for appointment in appointments %}
+
+
+                    <tr>
+
+
+                        <td>
+
+
+                            <div class="patient-info">
+
+
+                                <div class="patient-avatar">
+
+                                    {{ appointment.patient.name|slice:":1"|upper }}
+
+                                </div>
+
+
+                                <div>
+
+
+                                    <div class="patient-name">
+
+                                        {{ appointment.patient.name }}
+
+                                    </div>
+
+
+                                    <div class="patient-email">
+
+                                        {{ appointment.patient.email }}
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </td>
+
+
+                        <td>
+
+                            {{ appointment.appointment_date|date:"d M Y" }}
+
+                        </td>
+
+
+                        <td>
+
+                            {{ appointment.appointment_time|time:"h:i A" }}
+
+                        </td>
+
+
+                        <td>
+
+
+                            <span
+                                class="status {{ appointment.status }}"
+                            >
+
+                                {{ appointment.get_status_display }}
+
+                            </span>
+
+
+                        </td>
+
+
+                        <td>
+
+
+                            <div class="actions">
+
+
+                                {% if appointment.status == "pending" %}
+
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'update_appointment_status' appointment.id 'confirmed' %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn confirm-btn"
+                                    >
+
+                                        Confirm
+
+                                    </button>
+
+                                </form>
+
+
+                                {% endif %}
+
+
+                                {% if appointment.status == "confirmed" %}
+
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'update_appointment_status' appointment.id 'completed' %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn complete-btn"
+                                    >
+
+                                        Complete
+
+                                    </button>
+
+                                </form>
+
+
+                                {% endif %}
+
+
+                                {% if appointment.status != "completed" and appointment.status != "cancelled" %}
+
+
+                                <form
+                                    method="POST"
+                                    action="{% url 'update_appointment_status' appointment.id 'cancelled' %}"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn cancel-btn"
+                                    >
+
+                                        Cancel
+
+                                    </button>
+
+                                </form>
+
+
+                                {% endif %}
+
+
+                            </div>
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+        {% else %}
+
+
+        <div class="empty">
+
+
+            <div class="empty-icon">
+
+                📅
+
+            </div>
+
+
+            <h2>
+
+                No appointments scheduled
+
+            </h2>
+
+
+            <p>
+
+                Patient appointments will appear here when bookings are made.
+
+            </p>
+
+
+        </div>
+
+
+        {% endif %}
+
+
+    </section>
+
+
+</main>
+
+
+</body>
+
+</html>

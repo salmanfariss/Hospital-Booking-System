@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Availability | MediCare</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .section p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .day {
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .day input {
+            margin-right: 8px;
+        }
+
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select {
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .break-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .break-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .add-break {
+            background: transparent;
+            border: 1px dashed #2563eb;
+            color: #2563eb;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .save-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+        }
+
+        @media(max-width: 700px) {
+
+            .days {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .time-grid,
+            .break-row {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="top">
+            <div>
+                <h1>Manage Availability</h1>
+                <p>Set your working schedule and appointment preferences.</p>
+            </div>
+
+            <a href="{% url 'doctor_dashboard' %}" class="back-btn">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="card">
+
+
+                <!-- WORKING DAYS -->
+
+                <div class="section">
+
+                    <h2>Working Days</h2>
+
+                    <p>Select the days you are available for appointments.</p>
+
+                    <div class="days">
+
+                        <label class="day">
+                            <input type="checkbox" name="days" value="Monday">
+                            Monday
+                        </label>
+
+                        <label class="day">
+                            <input type="checkbox" name="days" value="Tuesday">
+                            Tuesday
+                        </label>
+
+                        <label class="day">
+                            <input type="checkbox" name="days" value="Wednesday">
+                            Wednesday
+                        </label>
+
+                        <label class="day">
+                            <input type="checkbox" name="days" value="Thursday">
+                            Thursday
+                        </label>
+
+                        <label class="day">
+                            <input type="checkbox" name="days" value="Friday">
+                            Friday
+                        </label>
+
+                        <label class="day">
+                            <input type="checkbox" name="days" value="Saturday">
+                            Saturday
+                        </label>
+
+                        <label class="day">
+                            <input type="checkbox" name="days" value="Sunday">
+                            Sunday
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- AVAILABLE TIME -->
+
+                <div class="section">
+
+                    <h2>Available Time</h2>
+
+                    <div class="time-grid">
+
+                        <div class="form-group">
+
+                            <label>Start Time</label>
+
+                            <input
+                                type="time"
+                                name="start_time"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>End Time</label>
+
+                            <input
+                                type="time"
+                                name="end_time"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- APPOINTMENT SETTINGS -->
+
+                <div class="section">
+
+                    <h2>Appointment Settings</h2>
+
+                    <div class="time-grid">
+
+                        <div class="form-group">
+
+                            <label>Slot Duration</label>
+
+                            <select name="slot_duration">
+
+                                <option value="15">15 Minutes</option>
+                                <option value="20">20 Minutes</option>
+                                <option value="30" selected>30 Minutes</option>
+                                <option value="45">45 Minutes</option>
+                                <option value="60">60 Minutes</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label>Maximum Appointments Per Day</label>
+
+                            <input
+                                type="number"
+                                name="max_appointments"
+                                min="1"
+                                placeholder="Example: 20"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BREAKS -->
+
+                <div class="section">
+
+                    <h2>Break Time</h2>
+
+                    <p>Add break periods when appointments should not be booked.</p>
+
+                    <div id="break-container">
+
+                        <div class="break-box">
+
+                            <div class="break-row">
+
+                                <div class="form-group">
+
+                                    <label>Break From</label>
+
+                                    <input
+                                        type="time"
+                                        name="break_start[]"
+                                    >
+
+                                </div>
+
+
+                                <div class="form-group">
+
+                                    <label>Break To</label>
+
+                                    <input
+                                        type="time"
+                                        name="break_end[]"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="add-break"
+                        onclick="addBreak()"
+                    >
+                        + Add Another Break
+                    </button>
+
+                </div>
+
+
+                <button type="submit" class="save-btn">
+                    Save Availability
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <script>
+
+        function addBreak() {
+
+            const container =
+                document.getElementById("break-container");
+
+            const newBreak = document.createElement("div");
+
+            newBreak.className = "break-box";
+
+            newBreak.innerHTML = `
+
+                <div class="break-row">
+
+                    <div class="form-group">
+
+                        <label>Break From</label>
+
+                        <input
+                            type="time"
+                            name="break_start[]"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Break To</label>
+
+                        <input
+                            type="time"
+                            name="break_end[]"
+                        >
+
+                    </div>
+
+                </div>
+
+            `;
+
+            container.appendChild(newBreak);
+
+        }
+
+    </script>
+
+</body>
+</html>

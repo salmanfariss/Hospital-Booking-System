@@ -1,0 +1,279 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Select Department | MediCare</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        nav {
+            height: 70px;
+            background: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 8%;
+
+            box-shadow:
+                0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .appointments {
+            text-decoration: none;
+            color: #2563eb;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .logout {
+            text-decoration: none;
+            color: #dc2626;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 60px 25px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .header h1 {
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #64748b;
+        }
+
+        .departments {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+
+            gap: 20px;
+        }
+
+        .department-card {
+            background: white;
+
+            padding: 30px 25px;
+
+            border-radius: 15px;
+
+            text-decoration: none;
+
+            color: #1e293b;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.06);
+
+            transition: 0.2s;
+        }
+
+        .department-card:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 10px 30px rgba(37,99,235,0.15);
+        }
+
+        .icon {
+            width: 55px;
+            height: 55px;
+
+            background: #eff6ff;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 25px;
+
+            margin-bottom: 20px;
+        }
+
+        .department-card h2 {
+            font-size: 18px;
+            margin: 0 0 8px;
+        }
+
+        .department-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .empty {
+            text-align: center;
+
+            padding: 50px;
+
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+
+            nav {
+                padding: 0 5%;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+    <div class="logo">
+        MediCare
+    </div>
+
+
+    <div class="nav-links">
+
+        <a
+            href="{% url 'my_appointments' %}"
+            class="appointments"
+        >
+            My Appointments
+        </a>
+
+
+        <a
+            href="{% url 'patient_logout' %}"
+            class="logout"
+        >
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<div class="container">
+
+
+    <div class="header">
+
+        <h1>
+            Select Department
+        </h1>
+
+        <p>
+            Choose a department, then select your preferred date and time.
+        </p>
+
+    </div>
+
+
+    {% if departments %}
+
+
+        <div class="departments">
+
+
+            {% for department in departments %}
+
+
+                <a
+                    href="{% url 'select_datetime' %}?department={{ department|urlencode }}"
+                    class="department-card"
+                >
+
+                    <div class="icon">
+                        🏥
+                    </div>
+
+
+                    <h2>
+                        {{ department }}
+                    </h2>
+
+
+                    <p>
+                        Select date and time
+                    </p>
+
+                </a>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+    {% else %}
+
+
+        <div class="empty">
+
+            <h2>
+                No Departments Available
+            </h2>
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+</body>
+
+</html>

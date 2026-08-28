@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Doctor Availability | MediCare</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: #f4f7fb;
+        color: #1e293b;
+    }
+
+    nav {
+        height: 70px;
+        background: white;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 0 8%;
+
+        box-shadow:
+            0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2563eb;
+    }
+
+    .back {
+        text-decoration: none;
+        color: #64748b;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 50px 25px;
+    }
+
+    .doctor-info {
+        background: white;
+        padding: 30px;
+        border-radius: 18px;
+
+        box-shadow:
+            0 5px 25px rgba(0,0,0,0.06);
+
+        margin-bottom: 30px;
+    }
+
+    .doctor-info h1 {
+        margin-bottom: 8px;
+    }
+
+    .specialization {
+        color: #2563eb;
+    }
+
+    .date-card {
+        background: white;
+        padding: 30px;
+        border-radius: 18px;
+
+        box-shadow:
+            0 5px 25px rgba(0,0,0,0.06);
+
+        margin-bottom: 30px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .date-form {
+        display: flex;
+        gap: 15px;
+    }
+
+    input[type="date"] {
+        flex: 1;
+        padding: 13px;
+
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+
+        font-size: 15px;
+    }
+
+    .check-button {
+        border: none;
+        background: #2563eb;
+        color: white;
+
+        padding: 13px 25px;
+
+        border-radius: 8px;
+
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+    .slots-card {
+        background: white;
+        padding: 30px;
+        border-radius: 18px;
+
+        box-shadow:
+            0 5px 25px rgba(0,0,0,0.06);
+    }
+
+    .slot-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(auto-fill, minmax(130px, 1fr));
+
+        gap: 15px;
+
+        margin-top: 25px;
+    }
+
+    .slot-form {
+        margin: 0;
+    }
+
+    .slot-button {
+        width: 100%;
+
+        background: #eff6ff;
+        color: #2563eb;
+
+        border: 1px solid #bfdbfe;
+
+        padding: 14px;
+
+        border-radius: 9px;
+
+        cursor: pointer;
+
+        font-weight: bold;
+
+        transition: 0.2s;
+    }
+
+    .slot-button:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    .booked-slot {
+        width: 100%;
+
+        background: #fee2e2;
+        color: #dc2626;
+
+        border: 1px solid #fecaca;
+
+        padding: 14px;
+
+        border-radius: 9px;
+
+        cursor: not-allowed;
+
+        font-weight: bold;
+    }
+
+    .booked-text {
+        display: block;
+
+        font-size: 11px;
+
+        margin-top: 5px;
+
+        font-weight: normal;
+    }
+
+    .message {
+        background: #fef3c7;
+        color: #92400e;
+
+        padding: 15px;
+        border-radius: 10px;
+
+        margin-top: 20px;
+    }
+
+    .empty {
+        color: #64748b;
+        padding: 30px 0;
+    }
+
+    @media(max-width: 600px) {
+
+        .date-form {
+            flex-direction: column;
+        }
+
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<nav>
+
+```
+<div class="logo">
+    MediCare
+</div>
+
+<a
+    href="{% url 'doctor_list' %}"
+    class="back"
+>
+    ← Back to Doctors
+</a>
+```
+
+</nav>
+
+<div class="container">
+
+```
+<div class="doctor-info">
+
+    <h1>
+        Dr. {{ doctor.name }}
+    </h1>
+
+    <div class="specialization">
+        {{ doctor.specialization }}
+    </div>
+
+</div>
+
+
+<div class="date-card">
+
+    <form method="GET">
+
+        <label>
+            Select Appointment Date
+        </label>
+
+        <div class="date-form">
+
+            <input
+                type="date"
+                name="date"
+                value="{{ selected_date }}"
+                required
+            >
+
+            <button
+                type="submit"
+                class="check-button"
+            >
+                Check Availability
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+{% if selected_date %}
+
+    <div class="slots-card">
+
+        <h2>
+            Appointment Slots
+        </h2>
+
+
+        {% if message %}
+
+            <div class="message">
+
+                {{ message }}
+
+            </div>
+
+
+        {% elif slots %}
+
+            <div class="slot-grid">
+
+
+                {% for slot in slots %}
+
+
+                    {% if slot.is_booked %}
+
+
+                        <button
+                            type="button"
+                            class="booked-slot"
+                            disabled
+                        >
+
+                            {{ slot.time|time:"h:i A" }}
+
+                            <span class="booked-text">
+                                Already Booked
+                            </span>
+
+                        </button>
+
+
+                    {% else %}
+
+
+                        <form
+                            method="POST"
+                            action="{% url 'book_appointment' doctor.id %}"
+                            class="slot-form"
+                        >
+
+                            {% csrf_token %}
+
+                            <input
+                                type="hidden"
+                                name="appointment_date"
+                                value="{{ selected_date }}"
+                            >
+
+                            <input
+                                type="hidden"
+                                name="appointment_time"
+                                value="{{ slot.time|time:'H:i' }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="slot-button"
+                            >
+
+                                {{ slot.time|time:"h:i A" }}
+
+                            </button>
+
+                        </form>
+
+
+                    {% endif %}
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+        {% else %}
+
+            <div class="empty">
+
+                No slots available for this date.
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+{% endif %}
+```
+
+</div>
+
+</body>
+
+</html>

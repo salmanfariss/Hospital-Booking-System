@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Appointments | MediCare</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f8fafc;
+            color: #17213a;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+            padding: 60px 30px;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .header h1 {
+            font-size: 52px;
+            margin: 0 0 12px;
+            color: #991b1b;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 22px;
+            color: #64748b;
+        }
+
+        /* =========================
+           SUCCESS MESSAGE
+        ========================= */
+
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+
+            padding: 18px 25px;
+            border-radius: 15px;
+
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+
+            margin-bottom: 30px;
+        }
+
+        /* =========================
+           APPOINTMENT CARD
+        ========================= */
+
+        .appointment-card {
+
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 30px 35px;
+
+            margin-bottom: 25px;
+
+            border: 1px solid #fee2e2;
+
+            box-shadow:
+                0 8px 25px rgba(127, 29, 29, 0.07);
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 30px;
+        }
+
+        .appointment-info {
+            flex: 1;
+        }
+
+        .doctor-name {
+            font-size: 30px;
+            font-weight: bold;
+
+            color: #17213a;
+
+            margin-bottom: 8px;
+        }
+
+        .specialization {
+            color: #dc2626;
+
+            font-size: 20px;
+            font-weight: 600;
+
+            margin-bottom: 22px;
+        }
+
+        /* =========================
+           DATE + TIME
+        ========================= */
+
+        .details {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .detail {
+            font-size: 18px;
+            color: #475569;
+        }
+
+        .detail strong {
+            color: #17213a;
+        }
+
+        /* =========================
+           RIGHT SIDE
+        ========================= */
+
+        .appointment-actions {
+
+            min-width: 190px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 11px 25px;
+
+            border-radius: 30px;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            text-transform: capitalize;
+        }
+
+        .status-confirmed {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .status-pending {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .status-cancelled {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* =========================
+           CANCEL BUTTON
+        ========================= */
+
+        .cancel-btn {
+
+            width: 190px;
+
+            border: none;
+
+            background: #dc2626;
+
+            color: white;
+
+            padding: 13px 20px;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .cancel-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* =========================
+           CANCELLED
+        ========================= */
+
+        .cancelled-text {
+
+            color: #64748b;
+
+            font-size: 15px;
+
+            font-weight: 600;
+        }
+
+        /* =========================
+           NO APPOINTMENTS
+        ========================= */
+
+        .no-appointments {
+
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 70px 30px;
+
+            text-align: center;
+
+            border: 1px solid #fee2e2;
+
+            box-shadow:
+                0 8px 25px rgba(127, 29, 29, 0.06);
+        }
+
+        .no-appointments h2 {
+
+            margin: 0 0 12px;
+
+            font-size: 32px;
+
+            color: #991b1b;
+        }
+
+        .no-appointments p {
+
+            margin: 0;
+
+            font-size: 19px;
+
+            color: #64748b;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .container {
+                padding: 35px 18px;
+            }
+
+            .header h1 {
+                font-size: 38px;
+            }
+
+            .header p {
+                font-size: 18px;
+            }
+
+            .appointment-card {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .appointment-actions {
+
+                width: 100%;
+
+                align-items: flex-start;
+            }
+
+            .cancel-btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <div class="header">
+
+        <h1>
+            My Appointments 🏥
+        </h1>
+
+        <p>
+            View and manage your booked appointments.
+        </p>
+
+    </div>
+
+
+    <!-- =========================
+         SUCCESS MESSAGE
+    ========================= -->
+
+    {% if success %}
+
+        <div class="success-message">
+
+            ✓ Appointment booked successfully.
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =========================
+         APPOINTMENTS
+    ========================= -->
+
+    {% if appointments %}
+
+
+        {% for appointment in appointments %}
+
+
+            <div class="appointment-card">
+
+
+                <!-- =========================
+                     INFORMATION
+                ========================= -->
+
+                <div class="appointment-info">
+
+
+                    <div class="doctor-name">
+
+                        Dr. {{ appointment.doctor.name }}
+
+                    </div>
+
+
+                    <div class="specialization">
+
+                        {{ appointment.doctor.specialization }}
+
+                    </div>
+
+
+                    <div class="details">
+
+
+                        <div class="detail">
+
+                            📅
+
+                            <strong>
+                                {{ appointment.appointment_date|date:"M. d, Y" }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="detail">
+
+                            🕐
+
+                            <strong>
+                                {{ appointment.appointment_time|time:"h:i A" }}
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =========================
+                     ACTIONS
+                ========================= -->
+
+                <div class="appointment-actions">
+
+
+                    {% if appointment.status == "confirmed" %}
+
+                        <div class="status status-confirmed">
+
+                            Confirmed
+
+                        </div>
+
+
+                        <form
+                            method="POST"
+                            action="{% url 'cancel_appointment' appointment.id %}"
+                            onsubmit="return confirm('Are you sure you want to cancel this appointment?');"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="cancel-btn"
+                            >
+
+                                Cancel Appointment
+
+                            </button>
+
+                        </form>
+
+
+                    {% elif appointment.status == "pending" %}
+
+                        <div class="status status-pending">
+
+                            Pending
+
+                        </div>
+
+
+                        <form
+                            method="POST"
+                            action="{% url 'cancel_appointment' appointment.id %}"
+                            onsubmit="return confirm('Are you sure you want to cancel this appointment?');"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="cancel-btn"
+                            >
+
+                                Cancel Appointment
+
+                            </button>
+
+                        </form>
+
+
+                    {% elif appointment.status == "cancelled" %}
+
+                        <div class="status status-cancelled">
+
+                            Cancelled
+
+                        </div>
+
+
+                        <div class="cancelled-text">
+
+                            This appointment has been cancelled.
+
+                        </div>
+
+
+                    {% else %}
+
+                        <div class="status">
+
+                            {{ appointment.status }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+            </div>
+
+
+        {% endfor %}
+
+
+    {% else %}
+
+
+        <div class="no-appointments">
+
+            <h2>
+                No Appointments
+            </h2>
+
+            <p>
+                You don't have any booked appointments yet.
+            </p>
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
+
+
+</body>
+
+</html>

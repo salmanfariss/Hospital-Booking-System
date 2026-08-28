@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Appointment Booked</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #17213c;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 80px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 25px;
+            padding: 55px;
+            text-align: center;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .success-icon {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            background: #dff7e8;
+            color: #1f9d55;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        h1 {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #60708d;
+            font-size: 20px;
+            margin-bottom: 40px;
+        }
+
+        .details {
+            background: #f7f9fc;
+            border-radius: 18px;
+            padding: 30px;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #e5e9f0;
+            font-size: 18px;
+        }
+
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: #60708d;
+        }
+
+        .value {
+            font-weight: bold;
+            color: #17213c;
+        }
+
+        .status {
+            display: inline-block;
+            background: #fff1c7;
+            color: #a85b00;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 30px;
+            border-radius: 10px;
+            background: #2864e8;
+            color: white;
+            text-decoration: none;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background: #1e54c8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h1>Appointment Booked!</h1>
+
+        <p class="subtitle">
+            Your appointment has been successfully booked.
+        </p>
+
+        <div class="status">
+            Confirmed
+        </div>
+
+        <div class="details">
+
+            <div class="row">
+                <span class="label">Doctor</span>
+
+                <span class="value">
+                    {{ doctor.name }}
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">Department</span>
+
+                <span class="value">
+                    {{ doctor.specialization }}
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">Date</span>
+
+                <span class="value">
+                    {{ appointment.appointment_date|date:"M. d, Y" }}
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="label">Time</span>
+
+                <span class="value">
+                    {{ appointment.appointment_time|time:"h:i A" }}
+                </span>
+            </div>
+
+        </div>
+
+        <a href="{% url 'department_list' %}" class="button">
+            Book Another Appointment
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Select Date & Time Slot | MediCare</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 50px 25px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 35px;
+            text-decoration: none;
+            color: #2563eb;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .heading h1 {
+            font-size: 52px;
+            margin: 0 0 15px;
+        }
+
+        .heading p {
+            font-size: 22px;
+            color: #64748b;
+        }
+
+        .heading strong {
+            color: #2563eb;
+        }
+
+        /* ==============================
+           CARDS
+        ============================== */
+
+        .date-card,
+        .slot-card {
+
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 45px;
+
+            margin-bottom: 35px;
+
+            box-shadow:
+                0 10px 35px rgba(0, 0, 0, 0.06);
+        }
+
+        .date-card h2,
+        .slot-card h2 {
+
+            margin-top: 0;
+
+            margin-bottom: 25px;
+
+            font-size: 28px;
+        }
+
+        /* ==============================
+           DATE
+        ============================== */
+
+        .date-row {
+
+            display: flex;
+
+            gap: 20px;
+
+            align-items: end;
+        }
+
+        .date-wrapper {
+
+            flex: 1;
+        }
+
+        .date-wrapper input {
+
+            width: 100%;
+
+            padding: 18px 20px;
+
+            font-size: 21px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 14px;
+
+            outline: none;
+        }
+
+        .date-wrapper input:focus {
+
+            border-color: #2563eb;
+        }
+
+        /* ==============================
+           CHECK BUTTON
+        ============================== */
+
+        .check-btn {
+
+            border: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 18px 35px;
+
+            border-radius: 12px;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .check-btn:hover {
+
+            background: #1d4ed8;
+
+            transform: translateY(-1px);
+        }
+
+        /* ==============================
+           TIME SLOT GRID
+        ============================== */
+
+        .slots-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 20px;
+        }
+
+        .slot-form {
+
+            margin: 0;
+
+            width: 100%;
+        }
+
+        /* ==============================
+           COMMON SLOT BUTTON
+        ============================== */
+
+        .slot-btn {
+
+            width: 100%;
+
+            min-height: 78px;
+
+            border-radius: 14px;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            transition: 0.2s;
+        }
+
+        /* ==============================
+           AVAILABLE SLOT
+        ============================== */
+
+        .available-slot {
+
+            border: 1px solid #bfdbfe;
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            cursor: pointer;
+        }
+
+        .available-slot:hover {
+
+            background: #2563eb;
+
+            color: white;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 6px 15px rgba(37, 99, 235, 0.20);
+        }
+
+        /* ==============================
+           NOT AVAILABLE / BOOKED
+        ============================== */
+
+        .booked-slot {
+
+            border: 1px solid #d1d5db;
+
+            background: #e5e7eb;
+
+            color: #6b7280;
+
+            cursor: not-allowed;
+
+            opacity: 0.9;
+        }
+
+        .booked-slot:hover {
+
+            background: #e5e7eb;
+
+            color: #6b7280;
+
+            transform: none;
+        }
+
+        .booked-time {
+
+            display: block;
+
+            font-size: 18px;
+
+            font-weight: bold;
+        }
+
+        .booked-label {
+
+            display: block;
+
+            margin-top: 7px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            color: #6b7280;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.3px;
+        }
+
+        /* ==============================
+           MESSAGE
+        ============================== */
+
+        .message {
+
+            margin-bottom: 25px;
+
+            padding: 15px 20px;
+
+            border-radius: 12px;
+
+            background: #fff7ed;
+
+            border: 1px solid #fed7aa;
+
+            color: #c2410c;
+
+            font-size: 16px;
+
+            font-weight: 600;
+        }
+
+        /* ==============================
+           EMPTY
+        ============================== */
+
+        .empty {
+
+            padding: 45px;
+
+            text-align: center;
+
+            background: #f8fafc;
+
+            border-radius: 15px;
+
+            color: #64748b;
+
+            font-size: 18px;
+        }
+
+        /* ==============================
+           LEGEND
+        ============================== */
+
+        .slot-legend {
+
+            display: flex;
+
+            gap: 25px;
+
+            margin-top: 25px;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 14px;
+
+            color: #64748b;
+        }
+
+        .legend-box {
+
+            width: 18px;
+
+            height: 18px;
+
+            border-radius: 5px;
+        }
+
+        .legend-available {
+
+            background: #eff6ff;
+
+            border: 1px solid #bfdbfe;
+        }
+
+        .legend-booked {
+
+            background: #e5e7eb;
+
+            border: 1px solid #d1d5db;
+        }
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @media (max-width: 900px) {
+
+            .slots-grid {
+
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .container {
+
+                padding: 30px 15px;
+            }
+
+            .heading h1 {
+
+                font-size: 36px;
+            }
+
+            .heading p {
+
+                font-size: 18px;
+            }
+
+            .date-row {
+
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+            .check-btn {
+
+                width: 100%;
+            }
+
+            .slots-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 12px;
+            }
+
+            .date-card,
+            .slot-card {
+
+                padding: 25px;
+            }
+
+            .slot-btn {
+
+                min-height: 70px;
+
+                font-size: 16px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- ==============================
+         BACK
+    ============================== -->
+
+    <a
+        href="{% url 'department_list' %}"
+        class="back-btn"
+    >
+        ← Back to Departments
+    </a>
+
+
+    <!-- ==============================
+         HEADING
+    ============================== -->
+
+    <div class="heading">
+
+        <h1>
+            Select Date & Time Slot
+        </h1>
+
+        <p>
+
+            Department:
+
+            <strong>
+                {{ department }}
+            </strong>
+
+        </p>
+
+    </div>
+
+
+    <!-- ==============================
+         DATE CARD
+    ============================== -->
+
+    <div class="date-card">
+
+        <h2>
+            Select Appointment Date
+        </h2>
+
+
+        <form method="GET">
+
+            <input
+                type="hidden"
+                name="department"
+                value="{{ department }}"
+            >
+
+
+            <div class="date-row">
+
+
+                <div class="date-wrapper">
+
+                    <input
+                        type="date"
+                        name="date"
+                        value="{{ selected_date|default:'' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="check-btn"
+                >
+
+                    Check Available Time Slots →
+
+                </button>
+
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ==============================
+         TIME SLOTS
+    ============================== -->
+
+    {% if selected_date %}
+
+
+        <div class="slot-card">
+
+
+            <h2>
+                Select Time Slot
+            </h2>
+
+
+            <!-- MESSAGE -->
+
+            {% if message %}
+
+                <div class="message">
+
+                    {{ message }}
+
+                </div>
+
+            {% endif %}
+
+
+            {% if slots %}
+
+
+                <div class="slots-grid">
+
+
+                    {% for slot in slots %}
+
+
+                        {% if slot.available %}
+
+
+                            <!-- ==========================
+                                 AVAILABLE SLOT
+                            =========================== -->
+
+                            <form
+                                method="POST"
+                                class="slot-form"
+                            >
+
+                                {% csrf_token %}
+
+
+                                <input
+                                    type="hidden"
+                                    name="date"
+                                    value="{{ selected_date }}"
+                                >
+
+
+                                <input
+                                    type="hidden"
+                                    name="time"
+                                    value="{{ slot.time|time:'H:i' }}"
+                                >
+
+
+                                <button
+                                    type="submit"
+                                    class="slot-btn available-slot"
+                                >
+
+                                    {{ slot.time|time:"h:i A" }}
+
+                                </button>
+
+
+                            </form>
+
+
+                        {% else %}
+
+
+                            <!-- ==========================
+                                 NOT AVAILABLE SLOT
+                            =========================== -->
+
+                            <button
+                                type="button"
+                                class="slot-btn booked-slot"
+                                disabled
+                            >
+
+                                <span class="booked-time">
+
+                                    {{ slot.time|time:"h:i A" }}
+
+                                </span>
+
+
+                                <span class="booked-label">
+
+                                    Not Available
+
+                                </span>
+
+                            </button>
+
+
+                        {% endif %}
+
+
+                    {% endfor %}
+
+
+                </div>
+
+
+                <!-- ==============================
+                     LEGEND
+                ============================== -->
+
+                <div class="slot-legend">
+
+
+                    <div class="legend-item">
+
+                        <span
+                            class="legend-box legend-available"
+                        ></span>
+
+                        Available
+
+                    </div>
+
+
+                    <div class="legend-item">
+
+                        <span
+                            class="legend-box legend-booked"
+                        ></span>
+
+                        Not Available
+
+                    </div>
+
+
+                </div>
+
+
+            {% else %}
+
+
+                <!-- ==============================
+                     NO SLOTS
+                ============================== -->
+
+                <div class="empty">
+
+                    No time slots are available
+                    for the selected date.
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+
+    {% endif %}
+
+
+</div>
+
+</body>
+
+</html>
