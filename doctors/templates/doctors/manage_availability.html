@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,6 @@
     <title>Manage Availability | MediCare</title>
 
     <style>
-
         * {
             margin: 0;
             padding: 0;
@@ -43,7 +43,7 @@
             background: white;
             padding: 35px;
             border-radius: 18px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
         }
 
         .section {
@@ -154,7 +154,6 @@
             }
 
         }
-
     </style>
 </head>
 
@@ -243,11 +242,7 @@
 
                             <label>Start Time</label>
 
-                            <input
-                                type="time"
-                                name="start_time"
-                                required
-                            >
+                            <input type="time" name="start_time" required>
 
                         </div>
 
@@ -256,11 +251,7 @@
 
                             <label>End Time</label>
 
-                            <input
-                                type="time"
-                                name="end_time"
-                                required
-                            >
+                            <input type="time" name="end_time" required>
 
                         </div>
 
@@ -298,13 +289,7 @@
 
                             <label>Maximum Appointments Per Day</label>
 
-                            <input
-                                type="number"
-                                name="max_appointments"
-                                min="1"
-                                placeholder="Example: 20"
-                                required
-                            >
+                            <input type="number" name="max_appointments" min="1" placeholder="Example: 20" required>
 
                         </div>
 
@@ -312,6 +297,11 @@
 
                 </div>
 
+                <div>
+                    <label>Maximum Patients Per Slot</label>
+
+                    <input type="number" name="max_patients_per_slot" min="1" value="1" placeholder="Example: 2">
+                </div>
 
                 <!-- BREAKS -->
 
@@ -331,10 +321,7 @@
 
                                     <label>Break From</label>
 
-                                    <input
-                                        type="time"
-                                        name="break_start[]"
-                                    >
+                                    <input type="time" name="break_start[]">
 
                                 </div>
 
@@ -343,10 +330,7 @@
 
                                     <label>Break To</label>
 
-                                    <input
-                                        type="time"
-                                        name="break_end[]"
-                                    >
+                                    <input type="time" name="break_end[]">
 
                                 </div>
 
@@ -357,11 +341,7 @@
                     </div>
 
 
-                    <button
-                        type="button"
-                        class="add-break"
-                        onclick="addBreak()"
-                    >
+                    <button type="button" class="add-break" onclick="addBreak()">
                         + Add Another Break
                     </button>
 
@@ -428,4 +408,5 @@
     </script>
 
 </body>
+
 </html>

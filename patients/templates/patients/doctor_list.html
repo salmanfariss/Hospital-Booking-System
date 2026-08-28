@@ -1,3 +1,835 @@
+{% if booked %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Appointment Booked | MediCare</title>
+
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+
+        /* =====================================================
+           BODY
+        ===================================================== */
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ecfdf5 0%,
+                    #ffffff 50%,
+                    #f0fdf4 100%
+                );
+
+            color: #14532d;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 40px 20px;
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+        ===================================================== */
+
+        .success-container {
+
+            width: 100%;
+
+            max-width: 1150px;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           TOP INFORMATION
+        ===================================================== */
+
+        .appointment-info {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 28px;
+        }
+
+
+        .info-box {
+
+            background: #ffffff;
+
+            border: 1px solid #bbf7d0;
+
+            border-radius: 20px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(22, 101, 52, 0.07);
+        }
+
+
+        .info-label {
+
+            display: block;
+
+            font-size: 14px;
+
+            color: #64748b;
+
+            text-transform: uppercase;
+
+            font-weight: bold;
+
+            letter-spacing: 0.6px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .info-value {
+
+            display: block;
+
+            font-size: 22px;
+
+            color: #15803d;
+
+            font-weight: bold;
+
+            word-break: break-word;
+        }
+
+
+        /* =====================================================
+           SUCCESS CARD
+        ===================================================== */
+
+        .success-card {
+
+            background: #ffffff;
+
+            border: 1px solid #bbf7d0;
+
+            border-radius: 30px;
+
+            padding: 60px 45px;
+
+            box-shadow:
+                0 25px 70px
+                rgba(22, 101, 52, 0.10);
+        }
+
+
+        /* =====================================================
+           SUCCESS ICON
+        ===================================================== */
+
+        .success-icon {
+
+            width: 110px;
+
+            height: 110px;
+
+            margin: 0 auto 25px;
+
+            border-radius: 50%;
+
+            background: #dcfce7;
+
+            border: 6px solid #86efac;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #15803d;
+
+            font-size: 62px;
+
+            font-weight: bold;
+
+            box-shadow:
+                0 12px 35px
+                rgba(22, 163, 74, 0.15);
+        }
+
+
+        /* =====================================================
+           TITLE
+        ===================================================== */
+
+        .success-title {
+
+            color: #15803d;
+
+            font-size: 48px;
+
+            line-height: 1.2;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* =====================================================
+           MESSAGE
+        ===================================================== */
+
+        .success-message {
+
+            color: #4b7f5a;
+
+            font-size: 20px;
+
+            line-height: 1.6;
+
+            margin-bottom: 35px;
+        }
+
+
+        /* =====================================================
+           DETAILS
+        ===================================================== */
+
+        .details {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 40px;
+        }
+
+
+        .detail-box {
+
+            background: #f0fdf4;
+
+            border: 1px solid #bbf7d0;
+
+            border-radius: 20px;
+
+            padding: 25px 15px;
+        }
+
+
+        .detail-label {
+
+            display: block;
+
+            color: #4b7f5a;
+
+            font-size: 13px;
+
+            text-transform: uppercase;
+
+            font-weight: bold;
+
+            letter-spacing: 0.7px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .detail-value {
+
+            display: block;
+
+            color: #14532d;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            word-break: break-word;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .buttons {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .btn {
+
+            min-width: 210px;
+
+            padding: 16px 25px;
+
+            border-radius: 14px;
+
+            text-decoration: none;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            transition: all 0.2s ease;
+        }
+
+
+        /* =====================================================
+           HOME
+        ===================================================== */
+
+        .home-btn {
+
+            background: #16a34a;
+
+            color: white;
+
+            border: 1px solid #16a34a;
+        }
+
+
+        .home-btn:hover {
+
+            background: #15803d;
+
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(22, 163, 74, 0.25);
+        }
+
+
+        /* =====================================================
+           MY APPOINTMENTS
+        ===================================================== */
+
+        .appointments-btn {
+
+            background: #15803d;
+
+            color: white;
+
+            border: 1px solid #15803d;
+        }
+
+
+        .appointments-btn:hover {
+
+            background: #166534;
+
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(21, 128, 61, 0.25);
+        }
+
+
+        /* =====================================================
+           BACK
+        ===================================================== */
+
+        .back-btn {
+
+            background: white;
+
+            color: #166534;
+
+            border: 1px solid #86efac;
+        }
+
+
+        .back-btn:hover {
+
+            background: #f0fdf4;
+
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(22, 101, 52, 0.08);
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer-note {
+
+            margin-top: 30px;
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+
+        .footer-note strong {
+
+            color: #15803d;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 800px) {
+
+            body {
+
+                padding: 25px 15px;
+            }
+
+
+            .appointment-info {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .success-card {
+
+                padding: 45px 25px;
+
+                border-radius: 24px;
+            }
+
+
+            .success-title {
+
+                font-size: 36px;
+            }
+
+
+            .success-message {
+
+                font-size: 18px;
+            }
+
+
+            .details {
+
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 550px) {
+
+            .success-card {
+
+                padding: 35px 18px;
+
+                border-radius: 20px;
+            }
+
+
+            .success-icon {
+
+                width: 85px;
+
+                height: 85px;
+
+                font-size: 45px;
+
+                border-width: 5px;
+            }
+
+
+            .success-title {
+
+                font-size: 30px;
+            }
+
+
+            .success-message {
+
+                font-size: 16px;
+            }
+
+
+            .info-value {
+
+                font-size: 19px;
+            }
+
+
+            .btn {
+
+                width: 100%;
+
+                min-width: 0;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="success-container">
+
+
+    <!-- =====================================================
+         APPOINTMENT INFORMATION
+    ====================================================== -->
+
+    <div class="appointment-info">
+
+
+        <div class="info-box">
+
+            <span class="info-label">
+                Department
+            </span>
+
+            <span class="info-value">
+                {{ department }}
+            </span>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <span class="info-label">
+                Date
+            </span>
+
+            <span class="info-value">
+                {{ selected_date }}
+            </span>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <span class="info-label">
+                Time
+            </span>
+
+            <span
+                class="info-value formatted-time"
+                data-time="{{ selected_time }}"
+            >
+                {{ selected_time }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         SUCCESS CARD
+    ====================================================== -->
+
+    <div class="success-card">
+
+
+        <!-- SUCCESS ICON -->
+
+        <div class="success-icon">
+
+            ✓
+
+        </div>
+
+
+
+        <!-- TITLE -->
+
+        <h1 class="success-title">
+
+            Appointment Booked Successfully!
+
+        </h1>
+
+
+
+        <!-- MESSAGE -->
+
+        <p class="success-message">
+
+            Your appointment has been successfully
+            confirmed.
+
+        </p>
+
+
+
+        <!-- =================================================
+             APPOINTMENT DETAILS
+        ================================================== -->
+
+        <div class="details">
+
+
+            <!-- DEPARTMENT -->
+
+            <div class="detail-box">
+
+                <span class="detail-label">
+
+                    Department
+
+                </span>
+
+                <span class="detail-value">
+
+                    {{ department }}
+
+                </span>
+
+            </div>
+
+
+
+            <!-- DATE -->
+
+            <div class="detail-box">
+
+                <span class="detail-label">
+
+                    Appointment Date
+
+                </span>
+
+                <span class="detail-value">
+
+                    {{ selected_date }}
+
+                </span>
+
+            </div>
+
+
+
+            <!-- TIME -->
+
+            <div class="detail-box">
+
+                <span class="detail-label">
+
+                    Appointment Time
+
+                </span>
+
+                <span
+                    class="detail-value formatted-time"
+                    data-time="{{ selected_time }}"
+                >
+                    {{ selected_time }}
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             NAVIGATION BUTTONS
+        ================================================== -->
+
+        <div class="buttons">
+
+
+            <!-- HOME -->
+
+            <a
+                href="{% url 'home' %}"
+                class="btn home-btn"
+            >
+
+                🏠 Home
+
+            </a>
+
+
+
+            <!-- MY APPOINTMENTS -->
+
+            <a
+                href="{% url 'my_appointments' %}"
+                class="btn appointments-btn"
+            >
+
+                📅 My Appointments
+
+            </a>
+
+
+
+            <!-- BACK TO DEPARTMENTS -->
+
+            <a
+                href="{% url 'department_list' %}"
+                class="btn back-btn"
+            >
+
+                ← Back to Departments
+
+            </a>
+
+
+        </div>
+
+
+
+        <!-- FOOTER -->
+
+        <div class="footer-note">
+
+            You can view or manage your appointment
+            anytime from
+
+            <strong>
+                My Appointments
+            </strong>.
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     TIME FORMATTER
+     16:00  → 4:00 PM
+     16:30  → 4:30 PM
+     09:00  → 9:00 AM
+========================================================= -->
+
+<script>
+
+function formatTime(time) {
+
+    if (!time) {
+
+        return "";
+
+    }
+
+
+    let parts = time.split(":");
+
+    let hour = parseInt(parts[0]);
+
+    let minute = parts[1] || "00";
+
+
+    let period = hour >= 12
+        ? "PM"
+        : "AM";
+
+
+    hour = hour % 12;
+
+
+    if (hour === 0) {
+
+        hour = 12;
+
+    }
+
+
+    return hour + ":" + minute + " " + period;
+
+}
+
+
+document
+    .querySelectorAll(".formatted-time")
+    .forEach(function(element) {
+
+        let time = element.dataset.time;
+
+        element.textContent = formatTime(time);
+
+    });
+
+</script>
+
+
+</body>
+
+</html>
+
+
+{% else %}
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,485 +844,741 @@
 
     <title>Select Doctor | MediCare</title>
 
+
     <style>
 
+        /* =====================================================
+           RESET
+        ===================================================== */
+
         * {
+
             box-sizing: border-box;
+
+            margin: 0;
+
+            padding: 0;
+
             font-family: Arial, sans-serif;
         }
 
-        body {
-            margin: 0;
-            min-height: 100vh;
-
-            background: #f4f7fb;
-
-            color: #17213a;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1100px;
-
-            margin: 0 auto;
-
-            padding: 30px 20px 60px;
-        }
 
         /* =====================================================
-           TOP INFORMATION
+           BODY
+        ===================================================== */
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ecfdf5,
+                    #ffffff,
+                    #f0fdf4
+                );
+
+            color: #14532d;
+
+            padding: 35px 25px;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .page-container {
+
+            width: 100%;
+
+            max-width: 1250px;
+
+            margin: 0 auto;
+        }
+
+
+        /* =====================================================
+           TOP INFO
         ===================================================== */
 
         .top-info {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
 
-            margin-bottom: 60px;
+            display: grid;
 
-            flex-wrap: wrap;
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 30px;
         }
 
+
         .info-box {
-            background: #eaf2ff;
 
-            color: #2563eb;
+            background: #ffffff;
 
-            padding: 18px 35px;
+            border: 1px solid #bbf7d0;
 
-            border-radius: 40px;
+            border-radius: 20px;
+
+            padding: 20px;
+
+            text-align: center;
+
+            box-shadow:
+                0 8px 25px
+                rgba(22, 101, 52, 0.06);
+        }
+
+
+        .info-label {
+
+            display: block;
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            text-transform: uppercase;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+
+        .info-value {
+
+            display: block;
+
+            color: #15803d;
 
             font-size: 22px;
 
             font-weight: bold;
-
-            text-align: center;
         }
+
 
         /* =====================================================
-           TITLE
+           PAGE CARD
         ===================================================== */
 
+        .doctor-section {
+
+            background: #ffffff;
+
+            border: 1px solid #bbf7d0;
+
+            border-radius: 30px;
+
+            padding: 50px 40px;
+
+            min-height: 500px;
+
+            box-shadow:
+                0 20px 60px
+                rgba(22, 101, 52, 0.08);
+        }
+
+
         .page-title {
+
             text-align: center;
 
-            margin-bottom: 40px;
+            font-size: 42px;
+
+            color: #14532d;
+
+            margin-bottom: 45px;
         }
 
-        .page-title h1 {
-            font-size: 38px;
 
-            margin: 0 0 10px;
+        /* =====================================================
+           DOCTOR GRID
+        ===================================================== */
 
-            color: #17213a;
+        .doctor-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fill, minmax(280px, 1fr));
+
+            gap: 25px;
         }
 
-        .page-title p {
-            margin: 0;
-
-            color: #64748b;
-
-            font-size: 18px;
-        }
 
         /* =====================================================
            DOCTOR CARD
         ===================================================== */
 
         .doctor-card {
-            background: white;
 
-            border-radius: 30px;
+            background: #f0fdf4;
 
-            padding: 60px;
+            border: 1px solid #bbf7d0;
 
-            margin-bottom: 30px;
+            border-radius: 22px;
 
-            box-shadow:
-                0 15px 45px rgba(0, 0, 0, 0.08);
+            padding: 35px 25px;
+
+            text-align: center;
+
+            transition: all 0.2s ease;
         }
 
+
+        .doctor-card:hover {
+
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(22, 101, 52, 0.10);
+        }
+
+
+        /* =====================================================
+           DOCTOR ICON
+        ===================================================== */
+
         .doctor-icon {
-            width: 135px;
-            height: 135px;
+
+            width: 105px;
+
+            height: 105px;
+
+            margin: 0 auto 20px;
 
             border-radius: 50%;
 
-            background: #dbeafe;
+            background: #dcfce7;
+
+            border: 5px solid #86efac;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
-            font-size: 65px;
-
-            margin-bottom: 35px;
+            font-size: 50px;
         }
+
+
+        /* =====================================================
+           DOCTOR NAME
+        ===================================================== */
 
         .doctor-name {
-            font-size: 46px;
 
-            margin: 0 0 10px;
+            color: #15803d;
 
-            color: #17213a;
+            font-size: 27px;
+
+            margin-bottom: 8px;
         }
 
-        .specialization {
-            font-size: 28px;
 
-            color: #2563eb;
+        /* =====================================================
+           SPECIALIZATION
+        ===================================================== */
 
-            margin-bottom: 40px;
+        .doctor-specialization {
+
+            color: #64748b;
+
+            font-size: 17px;
+
+            margin-bottom: 25px;
         }
 
-        .select-btn {
+
+        /* =====================================================
+           BOOK BUTTON
+        ===================================================== */
+
+        .book-btn {
+
             width: 100%;
 
             border: none;
 
-            background: #2563eb;
+            border-radius: 14px;
+
+            background: #16a34a;
 
             color: white;
 
-            padding: 20px;
+            padding: 16px 20px;
 
-            border-radius: 15px;
-
-            font-size: 25px;
+            font-size: 17px;
 
             font-weight: bold;
 
             cursor: pointer;
 
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
 
-        .select-btn:hover {
-            background: #1d4ed8;
+
+        .book-btn:hover {
+
+            background: #15803d;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(22, 163, 74, 0.22);
         }
+
 
         /* =====================================================
            ERROR
         ===================================================== */
 
         .error-message {
-            background: #fee2e2;
+
+            background: #fef2f2;
 
             border: 1px solid #fecaca;
 
             color: #b91c1c;
 
-            padding: 18px;
+            padding: 15px 20px;
 
             border-radius: 12px;
 
+            margin-bottom: 25px;
+
             text-align: center;
 
-            font-size: 17px;
-
-            margin-bottom: 25px;
+            font-weight: bold;
         }
+
 
         /* =====================================================
-           FULLY BOOKED
+           NO DOCTOR
         ===================================================== */
 
-        .fully-booked {
-            background: white;
-
-            border-radius: 25px;
-
-            padding: 60px 30px;
+        .no-doctor {
 
             text-align: center;
 
-            box-shadow:
-                0 15px 45px rgba(0, 0, 0, 0.08);
+            padding: 70px 20px;
         }
 
-        .fully-booked-icon {
+
+        .no-doctor-icon {
+
             font-size: 60px;
 
             margin-bottom: 20px;
         }
 
-        .fully-booked h2 {
-            color: #dc2626;
 
-            margin-bottom: 10px;
+        .no-doctor h2 {
+
+            color: #15803d;
 
             font-size: 30px;
+
+            margin-bottom: 12px;
         }
 
-        .fully-booked p {
+
+        .no-doctor p {
+
             color: #64748b;
 
-            font-size: 18px;
+            font-size: 17px;
         }
 
+
         /* =====================================================
-           SUCCESS
+           BACK BUTTON
         ===================================================== */
 
-        .success-box {
-            background: #ecfdf5;
+        .bottom-buttons {
 
-            border: 2px solid #bbf7d0;
+            display: flex;
 
-            color: #15803d;
+            justify-content: center;
 
-            border-radius: 25px;
-
-            padding: 65px 30px;
-
-            text-align: center;
-
-            margin-bottom: 35px;
+            margin-top: 35px;
         }
 
-        .success-icon {
-            font-size: 65px;
 
-            margin-bottom: 20px;
+        .back-department-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 14px 25px;
+
+            border-radius: 13px;
+
+            text-decoration: none;
+
+            color: #166534;
+
+            background: white;
+
+            border: 1px solid #86efac;
+
+            font-weight: bold;
+
+            transition: 0.2s ease;
         }
 
-        .success-box h1 {
-            margin: 0 0 15px;
 
-            font-size: 42px;
+        .back-department-btn:hover {
 
-            color: #15803d;
+            background: #f0fdf4;
+
+            transform: translateY(-2px);
         }
 
-        .success-box p {
-            margin: 0;
-
-            font-size: 20px;
-        }
 
         /* =====================================================
-           CONFIRMATION MODAL
+           MODAL OVERLAY
         ===================================================== */
 
         .modal-overlay {
-            display: none;
 
             position: fixed;
 
             inset: 0;
 
-            background: rgba(15, 23, 42, 0.60);
+            background:
+                rgba(20, 83, 45, 0.40);
 
-            z-index: 9999;
+            backdrop-filter: blur(5px);
+
+            display: none;
 
             align-items: center;
 
             justify-content: center;
 
             padding: 20px;
+
+            z-index: 9999;
         }
 
-        .modal-overlay.active {
+
+        .modal-overlay.show {
+
             display: flex;
         }
 
-        .modal {
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .booking-modal {
+
             width: 100%;
 
-            max-width: 500px;
+            max-width: 520px;
 
-            background: white;
+            background: #ffffff;
 
             border-radius: 25px;
 
             padding: 35px;
 
-            box-shadow:
-                0 25px 70px rgba(0, 0, 0, 0.25);
+            text-align: center;
 
-            animation: popup 0.2s ease;
+            border: 1px solid #bbf7d0;
+
+            box-shadow:
+                0 25px 70px
+                rgba(20, 83, 45, 0.25);
+
+            animation: modalOpen 0.2s ease;
         }
 
-        @keyframes popup {
+
+        @keyframes modalOpen {
 
             from {
-                transform: scale(0.92);
+
                 opacity: 0;
+
+                transform: scale(0.92);
             }
 
             to {
-                transform: scale(1);
-                opacity: 1;
-            }
 
+                opacity: 1;
+
+                transform: scale(1);
+            }
         }
 
+
+        /* =====================================================
+           MODAL ICON
+        ===================================================== */
+
         .modal-icon {
+
             width: 70px;
+
             height: 70px;
 
-            margin: 0 auto 20px;
+            margin: 0 auto 18px;
 
             border-radius: 50%;
 
-            background: #dbeafe;
+            background: #dcfce7;
+
+            border: 5px solid #86efac;
+
+            color: #15803d;
 
             display: flex;
+
             align-items: center;
+
             justify-content: center;
 
-            font-size: 35px;
+            font-size: 32px;
+
+            font-weight: bold;
         }
 
-        .modal h2 {
-            text-align: center;
 
-            margin: 0 0 12px;
+        /* =====================================================
+           MODAL TITLE
+        ===================================================== */
 
-            font-size: 28px;
+        .modal-title {
 
-            color: #17213a;
+            color: #15803d;
+
+            font-size: 29px;
+
+            margin-bottom: 10px;
         }
 
-        .modal-subtitle {
-            text-align: center;
+
+        .modal-question {
 
             color: #64748b;
 
             font-size: 16px;
 
             margin-bottom: 25px;
+
+            line-height: 1.5;
         }
 
-        .appointment-details {
-            background: #f8fafc;
 
-            border-radius: 15px;
+        /* =====================================================
+           MODAL DETAILS
+        ===================================================== */
 
-            padding: 20px;
+        .modal-details {
+
+            background: #f0fdf4;
+
+            border: 1px solid #bbf7d0;
+
+            border-radius: 18px;
+
+            padding: 18px;
+
+            text-align: left;
 
             margin-bottom: 25px;
         }
 
-        .detail-row {
+
+        .modal-detail {
+
             display: flex;
 
             justify-content: space-between;
 
-            gap: 20px;
+            gap: 15px;
 
             padding: 10px 0;
 
-            border-bottom: 1px solid #e2e8f0;
-
-            font-size: 16px;
+            border-bottom: 1px solid #dcfce7;
         }
 
-        .detail-row:last-child {
+
+        .modal-detail:last-child {
+
             border-bottom: none;
         }
 
-        .detail-label {
+
+        .modal-detail span {
+
             color: #64748b;
+
+            font-size: 14px;
         }
 
-        .detail-value {
-            color: #17213a;
 
-            font-weight: bold;
+        .modal-detail strong {
+
+            color: #14532d;
+
+            font-size: 15px;
 
             text-align: right;
         }
 
+
+        /* =====================================================
+           MODAL BUTTONS
+        ===================================================== */
+
         .modal-buttons {
+
             display: flex;
 
             gap: 12px;
         }
 
-        .cancel-btn,
-        .confirm-btn {
+
+        .modal-btn {
+
             flex: 1;
 
-            padding: 15px;
+            padding: 14px 18px;
 
-            border-radius: 10px;
+            border-radius: 12px;
 
-            font-size: 17px;
+            font-size: 16px;
 
             font-weight: bold;
 
             cursor: pointer;
+
+            transition: 0.2s ease;
         }
 
-        .cancel-btn {
+
+        /* CANCEL */
+
+        .cancel-modal-btn {
+
             background: white;
 
-            color: #64748b;
+            color: #166534;
 
-            border: 1px solid #cbd5e1;
+            border: 1px solid #86efac;
         }
 
-        .cancel-btn:hover {
-            background: #f1f5f9;
+
+        .cancel-modal-btn:hover {
+
+            background: #f0fdf4;
+
+            transform: translateY(-2px);
         }
 
-        .confirm-btn {
+
+        /* CONFIRM */
+
+        .confirm-modal-btn {
+
             background: #16a34a;
 
             color: white;
 
-            border: none;
+            border: 1px solid #16a34a;
         }
 
-        .confirm-btn:hover {
+
+        .confirm-modal-btn:hover {
+
             background: #15803d;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(22, 163, 74, 0.25);
         }
+
 
         /* =====================================================
-           MOBILE
+           RESPONSIVE
         ===================================================== */
 
-        @media (max-width: 600px) {
+        @media (max-width: 800px) {
+
+            body {
+
+                padding: 25px 15px;
+            }
+
 
             .top-info {
-                gap: 12px;
+
+                grid-template-columns: 1fr;
             }
 
-            .info-box {
-                width: 100%;
 
-                font-size: 17px;
+            .doctor-section {
 
-                padding: 14px 20px;
+                padding: 35px 20px;
             }
 
-            .doctor-card {
-                padding: 30px 22px;
-            }
 
-            .doctor-name {
+            .page-title {
+
                 font-size: 34px;
             }
 
-            .specialization {
-                font-size: 22px;
+        }
+
+
+        @media (max-width: 550px) {
+
+            .page-title {
+
+                font-size: 29px;
+
+                margin-bottom: 30px;
             }
 
-            .select-btn {
-                font-size: 20px;
+
+            .doctor-grid {
+
+                grid-template-columns: 1fr;
             }
 
-            .page-title h1 {
-                font-size: 30px;
-            }
-
-            .modal {
-                padding: 25px 20px;
-            }
 
             .modal-buttons {
+
                 flex-direction: column;
+            }
+
+
+            .modal-btn {
+
+                width: 100%;
+            }
+
+
+            .booking-modal {
+
+                padding: 28px 18px;
             }
 
         }
@@ -503,7 +1591,7 @@
 <body>
 
 
-<div class="container">
+<div class="page-container">
 
 
     <!-- =====================================================
@@ -512,118 +1600,179 @@
 
     <div class="top-info">
 
-        <div class="info-box">
-            Department: {{ department }}
-        </div>
 
         <div class="info-box">
-            Date: {{ selected_date }}
+
+            <span class="info-label">
+                Department
+            </span>
+
+            <span class="info-value">
+                {{ department }}
+            </span>
+
         </div>
 
+
         <div class="info-box">
-            Time: {{ selected_time }}
+
+            <span class="info-label">
+                Date
+            </span>
+
+            <span class="info-value">
+                {{ selected_date }}
+            </span>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <span class="info-label">
+                Time
+            </span>
+
+            <span
+                class="info-value formatted-time"
+                data-time="{{ selected_time }}"
+            >
+                {{ selected_time }}
+            </span>
+
         </div>
 
     </div>
 
 
+
     <!-- =====================================================
-         SUCCESS MESSAGE
+         ERROR
     ====================================================== -->
 
-    {% if booked %}
+    {% if error_message %}
 
-        <div class="success-box">
+        <div class="error-message">
 
-            <div class="success-icon">
-                ✓
-            </div>
-
-            <h1>
-                Appointment Booked Successfully
-            </h1>
-
-            <p>
-                Your appointment has been booked successfully.
-            </p>
+            {{ error_message }}
 
         </div>
 
-
-        {% if booked_doctor %}
-
-            <div class="doctor-card">
-
-                <div class="doctor-icon">
-                    👨‍⚕️
-                </div>
-
-                <h2 class="doctor-name">
-                    {{ booked_doctor.name }}
-                </h2>
-
-                <div class="specialization">
-                    {{ booked_doctor.specialization }}
-                </div>
-
-            </div>
-
-        {% endif %}
+    {% endif %}
 
 
-    {% else %}
+
+    <!-- =====================================================
+         DOCTOR SECTION
+    ====================================================== -->
+
+    <div class="doctor-section">
 
 
-        <!-- =================================================
-             PAGE TITLE
-        ================================================== -->
+        <h1 class="page-title">
 
-        <div class="page-title">
+            Available Doctors
 
-            <h1>
-                Select Your Doctor
-            </h1>
-
-            <p>
-                Choose an available doctor for your appointment.
-            </p>
-
-        </div>
+        </h1>
 
 
-        <!-- =================================================
-             ERROR
-        ================================================== -->
-
-        {% if error_message %}
-
-            <div class="error-message">
-                {{ error_message }}
-            </div>
-
-        {% endif %}
+        {% if doctors %}
 
 
-        <!-- =================================================
-             FULLY BOOKED
-        ================================================== -->
+            <div class="doctor-grid">
 
-        {% if slot_fully_booked %}
 
-            <div class="fully-booked">
+                {% for doctor in doctors %}
 
-                <div class="fully-booked-icon">
-                    😔
-                </div>
 
-                <h2>
-                    This Time Slot Is Fully Booked
-                </h2>
+                    <div class="doctor-card">
 
-                <p>
-                    All doctors are already booked for this time.
-                    Please choose another time slot.
-                </p>
+
+                        <!-- DOCTOR ICON -->
+
+                        <div class="doctor-icon">
+
+                            👨‍⚕️
+
+                        </div>
+
+
+
+                        <!-- DOCTOR NAME -->
+
+                        <h2 class="doctor-name">
+
+                            {{ doctor.name }}
+
+                        </h2>
+
+
+
+                        <!-- SPECIALIZATION -->
+
+                        <p class="doctor-specialization">
+
+                            {{ doctor.specialization }}
+
+                        </p>
+
+
+
+                        <!-- BOOK FORM -->
+
+                        <form
+                            method="POST"
+                            class="booking-form"
+                        >
+
+                            {% csrf_token %}
+
+
+                            <input
+                                type="hidden"
+                                name="doctor_id"
+                                value="{{ doctor.id }}"
+                            >
+
+
+                            <input
+                                type="hidden"
+                                name="date"
+                                value="{{ selected_date }}"
+                            >
+
+
+                            <input
+                                type="hidden"
+                                name="time"
+                                value="{{ selected_time }}"
+                            >
+
+
+                            <!-- IMPORTANT:
+                                 type=button
+                                 so form will NOT submit immediately
+                            -->
+
+                            <button
+                                type="button"
+                                class="book-btn"
+                                onclick="openBookingModal(this)"
+                            >
+
+                                ✓ Book Appointment
+
+                            </button>
+
+
+                        </form>
+
+
+                    </div>
+
+
+                {% endfor %}
+
 
             </div>
 
@@ -632,208 +1781,189 @@
 
 
             <!-- =================================================
-                 DOCTOR LIST
+                 NO DOCTOR
             ================================================== -->
 
-            {% for doctor in doctors %}
+            <div class="no-doctor">
 
-                <div class="doctor-card">
-
-                    <div class="doctor-icon">
-                        👨‍⚕️
-                    </div>
-
-                    <h2 class="doctor-name">
-                        Dr. {{ doctor.name }}
-                    </h2>
-
-                    <div class="specialization">
-                        {{ doctor.specialization }}
-                    </div>
-
-
-                    <!-- IMPORTANT:
-                         This form does NOT immediately submit.
-                         JavaScript opens confirmation popup first.
-                    -->
-
-                    <form
-                        method="POST"
-                        class="doctor-form"
-                    >
-
-                        {% csrf_token %}
-
-                        <input
-                            type="hidden"
-                            name="doctor_id"
-                            value="{{ doctor.id }}"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="date"
-                            value="{{ selected_date }}"
-                        >
-
-                        <input
-                            type="hidden"
-                            name="time"
-                            value="{{ selected_time }}"
-                        >
-
-
-                        <button
-                            type="button"
-                            class="select-btn"
-                            onclick="openConfirmation(
-                                this,
-                                '{{ doctor.name|escapejs }}',
-                                '{{ doctor.specialization|escapejs }}'
-                            )"
-                        >
-                            Select Doctor →
-                        </button>
-
-                    </form>
-
+                <div class="no-doctor-icon">
+                    🩺
                 </div>
 
-            {% empty %}
+                <h2>
+                    No Doctors Available
+                </h2>
 
-                <div class="fully-booked">
+                <p>
+                    There are no available doctors for
+                    this date and time.
+                </p>
 
-                    <div class="fully-booked-icon">
-                        😔
-                    </div>
+            </div>
 
-                    <h2>
-                        No Doctor Available
-                    </h2>
-
-                    <p>
-                        No doctor is available for the selected
-                        date and time.
-                    </p>
-
-                </div>
-
-            {% endfor %}
 
         {% endif %}
 
-    {% endif %}
+
+
+        <!-- =================================================
+             BACK
+        ================================================== -->
+
+        <div class="bottom-buttons">
+
+            <a
+                href="{% url 'select_datetime' %}?department={{ department|urlencode }}&date={{ selected_date }}"
+                class="back-department-btn"
+            >
+
+                ← Back to Time Slots
+
+            </a>
+
+        </div>
+
+
+    </div>
+
 
 </div>
 
 
+
 <!-- =========================================================
-     CONFIRMATION POPUP
+     BOOKING CONFIRMATION MODAL
 ========================================================= -->
 
 <div
+    id="bookingModal"
     class="modal-overlay"
-    id="confirmationModal"
 >
 
-    <div class="modal">
 
+    <div class="booking-modal">
+
+
+        <!-- ICON -->
 
         <div class="modal-icon">
-            📅
+
+            ?
+
         </div>
 
 
-        <h2>
+
+        <!-- TITLE -->
+
+        <h2 class="modal-title">
+
             Confirm Appointment
+
         </h2>
 
 
-        <div class="modal-subtitle">
+
+        <!-- QUESTION -->
+
+        <p class="modal-question">
 
             Are you sure you want to book this appointment?
 
-        </div>
+        </p>
 
 
-        <div class="appointment-details">
+
+        <!-- DETAILS -->
+
+        <div class="modal-details">
 
 
-            <div class="detail-row">
+            <div class="modal-detail">
 
-                <span class="detail-label">
+                <span>
                     Doctor
                 </span>
 
-                <span
-                    class="detail-value"
-                    id="confirmDoctor"
-                >
-                </span>
+                <strong id="modalDoctor">
+                    -
+                </strong>
 
             </div>
 
 
-            <div class="detail-row">
+            <div class="modal-detail">
 
-                <span class="detail-label">
+                <span>
                     Department
                 </span>
 
-                <span class="detail-value">
-                    {{ department }}
-                </span>
+                <strong id="modalDepartment">
+                    -
+                </strong>
 
             </div>
 
 
-            <div class="detail-row">
+            <div class="modal-detail">
 
-                <span class="detail-label">
+                <span>
                     Date
                 </span>
 
-                <span class="detail-value">
-                    {{ selected_date }}
-                </span>
+                <strong id="modalDate">
+                    -
+                </strong>
 
             </div>
 
 
-            <div class="detail-row">
+            <div class="modal-detail">
 
-                <span class="detail-label">
+                <span>
                     Time
                 </span>
 
-                <span class="detail-value">
-                    {{ selected_time }}
-                </span>
+                <strong id="modalTime">
+                    -
+                </strong>
 
             </div>
 
 
         </div>
 
+
+
+        <!-- BUTTONS -->
 
         <div class="modal-buttons">
 
 
+            <!-- CANCEL -->
+
             <button
                 type="button"
-                class="cancel-btn"
-                onclick="closeConfirmation()"
+                class="modal-btn cancel-modal-btn"
+                onclick="closeBookingModal()"
             >
+
                 Cancel
+
             </button>
 
 
+
+            <!-- CONFIRM -->
+
             <button
                 type="button"
-                class="confirm-btn"
-                onclick="confirmAppointment()"
+                class="modal-btn confirm-modal-btn"
+                onclick="confirmBooking()"
             >
-                Confirm Appointment
+
+                ✓ Confirm Booking
+
             </button>
 
 
@@ -842,98 +1972,266 @@
 
     </div>
 
+
 </div>
 
 
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
 <script>
 
-    let selectedForm = null;
+
+/* =========================================================
+   CURRENT FORM
+========================================================= */
+
+let selectedBookingForm = null;
 
 
-    /* ========================================================
-       OPEN CONFIRMATION POPUP
-    ======================================================== */
 
-    function openConfirmation(
-        button,
-        doctorName,
-        specialization
-    ) {
+/* =========================================================
+   FORMAT TIME
 
-        selectedForm = button.closest("form");
+   16:00 -> 4:00 PM
+   16:30 -> 4:30 PM
+   09:00 -> 9:00 AM
+========================================================= */
 
+function formatTime(time) {
 
-        document.getElementById(
-            "confirmDoctor"
-        ).textContent =
-            "Dr. " + doctorName;
+    if (!time) {
 
-
-        document.getElementById(
-            "confirmationModal"
-        ).classList.add("active");
+        return "";
 
     }
 
 
-    /* ========================================================
-       CLOSE POPUP
-    ======================================================== */
+    let parts = time.split(":");
 
-    function closeConfirmation() {
+    let hour = parseInt(parts[0]);
 
-        selectedForm = null;
+    let minute = parts[1] || "00";
 
 
-        document.getElementById(
-            "confirmationModal"
-        ).classList.remove("active");
-
-    }
+    let period = hour >= 12
+        ? "PM"
+        : "AM";
 
 
-    /* ========================================================
-       CONFIRM APPOINTMENT
-    ======================================================== */
+    hour = hour % 12;
 
-    function confirmAppointment() {
 
-        if (selectedForm) {
+    if (hour === 0) {
 
-            selectedForm.submit();
-
-        }
+        hour = 12;
 
     }
 
 
-    /* ========================================================
-       CLICK OUTSIDE MODAL
-    ======================================================== */
+    return hour + ":" + minute + " " + period;
+
+}
+
+
+
+/* =========================================================
+   FORMAT ALL TIMES ON PAGE
+========================================================= */
+
+document
+    .querySelectorAll(".formatted-time")
+    .forEach(function(element) {
+
+        let time =
+            element.dataset.time;
+
+        element.textContent =
+            formatTime(time);
+
+    });
+
+
+
+/* =========================================================
+   OPEN BOOKING MODAL
+========================================================= */
+
+function openBookingModal(button) {
+
+
+    /* ---------------------------------------------
+       Get current form
+    --------------------------------------------- */
+
+    selectedBookingForm =
+        button.closest(".booking-form");
+
+
+    if (!selectedBookingForm) {
+
+        return;
+
+    }
+
+
+    /* ---------------------------------------------
+       Get doctor name
+    --------------------------------------------- */
+
+    let doctorCard =
+        button.closest(".doctor-card");
+
+
+    let doctorName =
+        doctorCard
+            .querySelector(".doctor-name")
+            .textContent
+            .trim();
+
+
+    /* ---------------------------------------------
+       Get values
+    --------------------------------------------- */
+
+    let department =
+        selectedBookingForm
+            .querySelector(
+                'input[name="date"]'
+            );
+
+
+    let date =
+        selectedBookingForm
+            .querySelector(
+                'input[name="date"]'
+            )
+            .value;
+
+
+    let time =
+        selectedBookingForm
+            .querySelector(
+                'input[name="time"]'
+            )
+            .value;
+
+
+    let departmentText =
+        document
+            .querySelector(".top-info .info-box:nth-child(1) .info-value")
+            .textContent
+            .trim();
+
+
+    /* ---------------------------------------------
+       Put data inside popup
+    --------------------------------------------- */
 
     document
-        .getElementById("confirmationModal")
-        .addEventListener(
-            "click",
-            function(event) {
+        .getElementById("modalDoctor")
+        .textContent =
+            doctorName;
 
-                if (
-                    event.target === this
-                ) {
 
-                    closeConfirmation();
+    document
+        .getElementById("modalDepartment")
+        .textContent =
+            departmentText;
 
-                }
+
+    document
+        .getElementById("modalDate")
+        .textContent =
+            date;
+
+
+    document
+        .getElementById("modalTime")
+        .textContent =
+            formatTime(time);
+
+
+    /* ---------------------------------------------
+       Show popup
+    --------------------------------------------- */
+
+    document
+        .getElementById("bookingModal")
+        .classList
+        .add("show");
+
+}
+
+
+
+/* =========================================================
+   CLOSE BOOKING MODAL
+========================================================= */
+
+function closeBookingModal() {
+
+
+    document
+        .getElementById("bookingModal")
+        .classList
+        .remove("show");
+
+
+    selectedBookingForm = null;
+
+}
+
+
+
+/* =========================================================
+   CONFIRM BOOKING
+========================================================= */
+
+function confirmBooking() {
+
+
+    if (selectedBookingForm) {
+
+        selectedBookingForm.submit();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   CLICK OUTSIDE MODAL = CLOSE
+========================================================= */
+
+document
+    .getElementById("bookingModal")
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === this
+            ) {
+
+                closeBookingModal();
 
             }
-        );
+
+        }
+    );
 
 
-    /* ========================================================
-       ESC KEY CLOSE
-    ======================================================== */
 
-    document.addEventListener(
+/* =========================================================
+   ESC KEY = CLOSE
+========================================================= */
+
+document
+    .addEventListener(
         "keydown",
         function(event) {
 
@@ -941,12 +2239,13 @@
                 event.key === "Escape"
             ) {
 
-                closeConfirmation();
+                closeBookingModal();
 
             }
 
         }
     );
+
 
 </script>
 
@@ -954,3 +2253,6 @@
 </body>
 
 </html>
+
+
+{% endif %}

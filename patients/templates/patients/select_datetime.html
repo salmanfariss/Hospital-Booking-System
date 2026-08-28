@@ -26,19 +26,31 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: auto;
-            padding: 50px 25px;
+            padding: 45px 30px;
         }
+
+        /* ==============================
+           BACK BUTTON
+        ============================== */
 
         .back-btn {
             display: inline-block;
             margin-bottom: 35px;
             text-decoration: none;
             color: #2563eb;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: bold;
         }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* ==============================
+           HEADING
+        ============================== */
 
         .heading {
             text-align: center;
@@ -46,13 +58,15 @@
         }
 
         .heading h1 {
-            font-size: 52px;
+            font-size: 48px;
             margin: 0 0 15px;
+            color: #172033;
         }
 
         .heading p {
-            font-size: 22px;
+            font-size: 21px;
             color: #64748b;
+            margin: 0;
         }
 
         .heading strong {
@@ -68,7 +82,7 @@
 
             background: white;
 
-            border-radius: 22px;
+            border-radius: 25px;
 
             padding: 45px;
 
@@ -83,22 +97,24 @@
 
             margin-top: 0;
 
-            margin-bottom: 25px;
+            margin-bottom: 28px;
 
-            font-size: 28px;
+            font-size: 30px;
+
+            color: #172033;
         }
 
         /* ==============================
-           DATE
+           DATE ROW
         ============================== */
 
         .date-row {
 
             display: flex;
 
-            gap: 20px;
+            gap: 25px;
 
-            align-items: end;
+            align-items: stretch;
         }
 
         .date-wrapper {
@@ -106,24 +122,37 @@
             flex: 1;
         }
 
+        /* ==============================
+           DATE INPUT
+        ============================== */
+
         .date-wrapper input {
 
             width: 100%;
 
-            padding: 18px 20px;
+            height: 72px;
+
+            padding: 15px 22px;
 
             font-size: 21px;
 
             border: 1px solid #cbd5e1;
 
-            border-radius: 14px;
+            border-radius: 15px;
 
             outline: none;
+
+            background: white;
+
+            color: #172033;
         }
 
         .date-wrapper input:focus {
 
             border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(37, 99, 235, 0.10);
         }
 
         /* ==============================
@@ -132,30 +161,42 @@
 
         .check-btn {
 
+            min-width: 430px;
+
+            height: 72px;
+
             border: none;
 
             background: #2563eb;
 
             color: white;
 
-            padding: 18px 35px;
+            padding: 15px 35px;
 
-            border-radius: 12px;
+            border-radius: 14px;
 
-            font-size: 18px;
+            font-size: 20px;
 
             font-weight: bold;
 
             cursor: pointer;
 
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
 
         .check-btn:hover {
 
             background: #1d4ed8;
 
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 7px 18px rgba(37, 99, 235, 0.20);
+        }
+
+        .check-btn:active {
+
+            transform: translateY(0);
         }
 
         /* ==============================
@@ -167,9 +208,9 @@
             display: grid;
 
             grid-template-columns:
-                repeat(5, 1fr);
+                repeat(5, minmax(150px, 1fr));
 
-            gap: 20px;
+            gap: 22px;
         }
 
         .slot-form {
@@ -187,15 +228,15 @@
 
             width: 100%;
 
-            min-height: 78px;
+            min-height: 82px;
 
-            border-radius: 14px;
+            border-radius: 15px;
 
-            font-size: 18px;
+            font-size: 20px;
 
             font-weight: bold;
 
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
 
         /* ==============================
@@ -219,14 +260,19 @@
 
             color: white;
 
-            transform: translateY(-2px);
+            transform: translateY(-3px);
 
             box-shadow:
-                0 6px 15px rgba(37, 99, 235, 0.20);
+                0 7px 18px rgba(37, 99, 235, 0.20);
+        }
+
+        .available-slot:active {
+
+            transform: translateY(0);
         }
 
         /* ==============================
-           NOT AVAILABLE / BOOKED
+           NOT AVAILABLE
         ============================== */
 
         .booked-slot {
@@ -239,7 +285,7 @@
 
             cursor: not-allowed;
 
-            opacity: 0.9;
+            opacity: 0.95;
         }
 
         .booked-slot:hover {
@@ -249,13 +295,15 @@
             color: #6b7280;
 
             transform: none;
+
+            box-shadow: none;
         }
 
         .booked-time {
 
             display: block;
 
-            font-size: 18px;
+            font-size: 19px;
 
             font-weight: bold;
         }
@@ -266,7 +314,7 @@
 
             margin-top: 7px;
 
-            font-size: 13px;
+            font-size: 12px;
 
             font-weight: bold;
 
@@ -274,7 +322,7 @@
 
             text-transform: uppercase;
 
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
 
         /* ==============================
@@ -285,7 +333,7 @@
 
             margin-bottom: 25px;
 
-            padding: 15px 20px;
+            padding: 16px 20px;
 
             border-radius: 12px;
 
@@ -306,7 +354,7 @@
 
         .empty {
 
-            padding: 45px;
+            padding: 50px;
 
             text-align: center;
 
@@ -327,9 +375,9 @@
 
             display: flex;
 
-            gap: 25px;
+            gap: 30px;
 
-            margin-top: 25px;
+            margin-top: 30px;
 
             align-items: center;
 
@@ -342,18 +390,18 @@
 
             align-items: center;
 
-            gap: 8px;
+            gap: 9px;
 
-            font-size: 14px;
+            font-size: 15px;
 
             color: #64748b;
         }
 
         .legend-box {
 
-            width: 18px;
+            width: 20px;
 
-            height: 18px;
+            height: 20px;
 
             border-radius: 5px;
         }
@@ -376,7 +424,44 @@
            RESPONSIVE
         ============================== */
 
+        @media (max-width: 1100px) {
+
+            .slots-grid {
+
+                grid-template-columns:
+                    repeat(4, minmax(140px, 1fr));
+            }
+
+            .check-btn {
+
+                min-width: 350px;
+            }
+
+        }
+
         @media (max-width: 900px) {
+
+            .container {
+
+                padding: 35px 20px;
+            }
+
+            .heading h1 {
+
+                font-size: 40px;
+            }
+
+            .date-row {
+
+                flex-direction: column;
+            }
+
+            .check-btn {
+
+                width: 100%;
+
+                min-width: 0;
+            }
 
             .slots-grid {
 
@@ -390,29 +475,52 @@
 
             .container {
 
-                padding: 30px 15px;
+                padding: 25px 15px;
+            }
+
+            .heading {
+
+                margin-bottom: 30px;
             }
 
             .heading h1 {
 
-                font-size: 36px;
+                font-size: 32px;
+
+                line-height: 1.2;
             }
 
             .heading p {
 
-                font-size: 18px;
+                font-size: 17px;
             }
 
-            .date-row {
+            .date-card,
+            .slot-card {
 
-                flex-direction: column;
+                padding: 25px 20px;
 
-                align-items: stretch;
+                border-radius: 18px;
+            }
+
+            .date-card h2,
+            .slot-card h2 {
+
+                font-size: 25px;
+            }
+
+            .date-wrapper input {
+
+                height: 65px;
+
+                font-size: 18px;
             }
 
             .check-btn {
 
-                width: 100%;
+                height: 65px;
+
+                font-size: 17px;
             }
 
             .slots-grid {
@@ -423,17 +531,21 @@
                 gap: 12px;
             }
 
-            .date-card,
-            .slot-card {
-
-                padding: 25px;
-            }
-
             .slot-btn {
 
-                min-height: 70px;
+                min-height: 72px;
 
                 font-size: 16px;
+            }
+
+            .booked-time {
+
+                font-size: 16px;
+            }
+
+            .booked-label {
+
+                font-size: 10px;
             }
 
         }
@@ -510,6 +622,7 @@
 
                     <input
                         type="date"
+                        id="appointment-date"
                         name="date"
                         value="{{ selected_date|default:'' }}"
                         required
@@ -550,7 +663,9 @@
             </h2>
 
 
-            <!-- MESSAGE -->
+            <!-- ==============================
+                 MESSAGE
+            ============================== -->
 
             {% if message %}
 
@@ -562,6 +677,10 @@
 
             {% endif %}
 
+
+            <!-- ==============================
+                 SLOTS EXIST
+            ============================== -->
 
             {% if slots %}
 
@@ -580,11 +699,18 @@
                             =========================== -->
 
                             <form
-                                method="POST"
-                                class="slot-form"
+                                 method="POST"
+                                 action="{% url 'select_datetime' %}?department={{ department|urlencode }}"
+                                 class="slot-form"
                             >
-
                                 {% csrf_token %}
+
+
+                                <input
+                                    type="hidden"
+                                    name="department"
+                                    value="{{ department }}"
+                                >
 
 
                                 <input
@@ -709,6 +835,35 @@
 
 
 </div>
+
+
+<!-- ==============================
+     PREVENT PAST DATES
+============================== -->
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const dateInput =
+            document.getElementById("appointment-date");
+
+        if (dateInput) {
+
+            const today =
+                new Date().toISOString().split("T")[0];
+
+            dateInput.setAttribute(
+                "min",
+                today
+            );
+
+        }
+
+    });
+
+</script>
+
 
 </body>
 
