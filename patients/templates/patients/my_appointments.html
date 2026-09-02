@@ -28,12 +28,41 @@
         .container {
             max-width: 1250px;
             margin: auto;
-            padding: 60px 30px;
+            padding: 40px 30px 60px;
         }
 
-        /* =========================
-           HEADER
-        ========================= */
+
+        /* BACK BUTTON */
+
+        .back-section {
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+
+            display: inline-block;
+
+            background: #15803d;
+            color: white;
+
+            text-decoration: none;
+
+            padding: 14px 25px;
+
+            border-radius: 10px;
+
+            font-size: 17px;
+            font-weight: bold;
+
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #166534;
+        }
+
+
+        /* HEADER */
 
         .header {
             text-align: center;
@@ -53,11 +82,11 @@
             color: #64748b;
         }
 
-        /* =========================
-           SUCCESS MESSAGE
-        ========================= */
+
+        /* SUCCESS MESSAGE */
 
         .success-message {
+
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
             color: #15803d;
@@ -72,9 +101,8 @@
             margin-bottom: 30px;
         }
 
-        /* =========================
-           APPOINTMENT CARD
-        ========================= */
+
+        /* APPOINTMENT CARD */
 
         .appointment-card {
 
@@ -100,12 +128,16 @@
             gap: 30px;
         }
 
+
         .appointment-info {
             flex: 1;
         }
 
+
         .doctor-name {
+
             font-size: 30px;
+
             font-weight: bold;
 
             color: #17213a;
@@ -113,37 +145,52 @@
             margin-bottom: 8px;
         }
 
+
         .specialization {
+
             color: #dc2626;
 
             font-size: 20px;
+
             font-weight: 600;
 
             margin-bottom: 22px;
         }
 
-        /* =========================
-           DATE + TIME
-        ========================= */
+
+        /* DETAILS */
 
         .details {
+
             display: flex;
+
             gap: 25px;
+
             flex-wrap: wrap;
         }
 
+
         .detail {
+
             font-size: 18px;
+
             color: #475569;
+
+            background: #f8fafc;
+
+            padding: 12px 16px;
+
+            border-radius: 10px;
         }
 
+
         .detail strong {
+
             color: #17213a;
         }
 
-        /* =========================
-           RIGHT SIDE
-        ========================= */
+
+        /* ACTIONS */
 
         .appointment-actions {
 
@@ -158,9 +205,8 @@
             gap: 15px;
         }
 
-        /* =========================
-           STATUS
-        ========================= */
+
+        /* STATUS */
 
         .status {
 
@@ -177,27 +223,38 @@
             text-transform: capitalize;
         }
 
+
         .status-confirmed {
+
             background: #fef2f2;
+
             color: #dc2626;
+
             border: 1px solid #fecaca;
         }
 
+
         .status-pending {
+
             background: #fff7ed;
+
             color: #c2410c;
+
             border: 1px solid #fed7aa;
         }
 
+
         .status-cancelled {
+
             background: #f1f5f9;
+
             color: #64748b;
+
             border: 1px solid #cbd5e1;
         }
 
-        /* =========================
-           CANCEL BUTTON
-        ========================= */
+
+        /* CANCEL BUTTON */
 
         .cancel-btn {
 
@@ -222,13 +279,14 @@
             transition: 0.2s;
         }
 
+
         .cancel-btn:hover {
+
             background: #b91c1c;
         }
 
-        /* =========================
-           CANCELLED
-        ========================= */
+
+        /* CANCELLED TEXT */
 
         .cancelled-text {
 
@@ -239,9 +297,8 @@
             font-weight: 600;
         }
 
-        /* =========================
-           NO APPOINTMENTS
-        ========================= */
+
+        /* NO APPOINTMENTS */
 
         .no-appointments {
 
@@ -259,6 +316,7 @@
                 0 8px 25px rgba(127, 29, 29, 0.06);
         }
 
+
         .no-appointments h2 {
 
             margin: 0 0 12px;
@@ -267,6 +325,7 @@
 
             color: #991b1b;
         }
+
 
         .no-appointments p {
 
@@ -277,23 +336,25 @@
             color: #64748b;
         }
 
-        /* =========================
-           MOBILE
-        ========================= */
+
+        /* MOBILE */
 
         @media (max-width: 700px) {
 
             .container {
-                padding: 35px 18px;
+                padding: 30px 18px;
             }
+
 
             .header h1 {
                 font-size: 38px;
             }
 
+
             .header p {
                 font-size: 18px;
             }
+
 
             .appointment-card {
 
@@ -302,6 +363,7 @@
                 align-items: flex-start;
             }
 
+
             .appointment-actions {
 
                 width: 100%;
@@ -309,7 +371,9 @@
                 align-items: flex-start;
             }
 
+
             .cancel-btn {
+
                 width: 100%;
             }
 
@@ -326,9 +390,21 @@
 <div class="container">
 
 
-    <!-- =========================
-         HEADER
-    ========================= -->
+    <!-- BACK BUTTON -->
+
+    <div class="back-section">
+
+        <a
+            href="{% url 'department_list' %}"
+            class="back-btn"
+        >
+            ← Back to Departments
+        </a>
+
+    </div>
+
+
+    <!-- HEADER -->
 
     <div class="header">
 
@@ -343,9 +419,7 @@
     </div>
 
 
-    <!-- =========================
-         SUCCESS MESSAGE
-    ========================= -->
+    <!-- SUCCESS MESSAGE -->
 
     {% if success %}
 
@@ -358,9 +432,7 @@
     {% endif %}
 
 
-    <!-- =========================
-         APPOINTMENTS
-    ========================= -->
+    <!-- APPOINTMENTS -->
 
     {% if appointments %}
 
@@ -371,9 +443,7 @@
             <div class="appointment-card">
 
 
-                <!-- =========================
-                     INFORMATION
-                ========================= -->
+                <!-- INFORMATION -->
 
                 <div class="appointment-info">
 
@@ -395,6 +465,8 @@
                     <div class="details">
 
 
+                        <!-- DATE -->
+
                         <div class="detail">
 
                             📅
@@ -405,6 +477,8 @@
 
                         </div>
 
+
+                        <!-- TIME -->
 
                         <div class="detail">
 
@@ -417,20 +491,48 @@
                         </div>
 
 
+                        <!-- TOKEN -->
+
+                        {% if appointment.token_number %}
+
+                            <div class="detail">
+
+                                🎟️ Token
+
+                                <strong>
+                                    #{{ appointment.token_number }}
+                                </strong>
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="detail">
+
+                                🎟️ Token
+
+                                <strong>
+                                    Not Assigned
+                                </strong>
+
+                            </div>
+
+                        {% endif %}
+
+
                     </div>
 
 
                 </div>
 
 
-                <!-- =========================
-                     ACTIONS
-                ========================= -->
+                <!-- ACTIONS -->
 
                 <div class="appointment-actions">
 
 
                     {% if appointment.status == "confirmed" %}
+
 
                         <div class="status status-confirmed">
 
@@ -461,6 +563,7 @@
 
                     {% elif appointment.status == "pending" %}
 
+
                         <div class="status status-pending">
 
                             Pending
@@ -490,6 +593,7 @@
 
                     {% elif appointment.status == "cancelled" %}
 
+
                         <div class="status status-cancelled">
 
                             Cancelled
@@ -506,11 +610,13 @@
 
                     {% else %}
 
+
                         <div class="status">
 
                             {{ appointment.status }}
 
                         </div>
+
 
                     {% endif %}
 

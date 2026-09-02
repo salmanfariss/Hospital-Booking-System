@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Appointment Booked</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Appointment Booked Successfully</title>
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -14,104 +18,356 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #f4f7fb;
-            color: #17213c;
+            background: linear-gradient(
+                135deg,
+                #f5fbf8,
+                #eef7f3
+            );
+            color: #183b2c;
         }
 
         .container {
-            max-width: 900px;
-            margin: 80px auto;
+            max-width: 1100px;
+            margin: 50px auto;
             padding: 20px;
         }
 
         .card {
             background: white;
+            border: 1px solid #c5e8d8;
             border-radius: 25px;
-            padding: 55px;
+            padding: 40px;
             text-align: center;
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            box-shadow:
+                0 10px 35px rgba(0, 0, 0, 0.08);
         }
+
+        /* SUCCESS ICON */
 
         .success-icon {
             width: 90px;
             height: 90px;
-            margin: 0 auto 25px;
+
+            margin: 0 auto 20px;
+
             border-radius: 50%;
-            background: #dff7e8;
-            color: #1f9d55;
+
+            background: #e1f8ec;
+            border: 4px solid #6ed6a5;
+
+            color: #087a45;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
+
+            font-size: 50px;
             font-weight: bold;
         }
 
         h1 {
             font-size: 42px;
-            margin-bottom: 12px;
+            margin: 10px 0;
+            color: #17643e;
         }
 
         .subtitle {
-            color: #60708d;
-            font-size: 20px;
-            margin-bottom: 40px;
-        }
-
-        .details {
-            background: #f7f9fc;
-            border-radius: 18px;
-            padding: 30px;
-            text-align: left;
+            font-size: 19px;
+            color: #61766b;
             margin-bottom: 30px;
         }
 
-        .row {
+        /* PATIENT */
+
+        .patient-box {
             display: flex;
-            justify-content: space-between;
-            padding: 14px 0;
-            border-bottom: 1px solid #e5e9f0;
+            align-items: center;
+            justify-content: center;
+
+            gap: 15px;
+
+            padding: 18px;
+
+            background: #f3fcf7;
+
+            border: 1px solid #c7ead9;
+
+            border-radius: 15px;
+
+            margin-bottom: 25px;
+        }
+
+        .patient-icon {
+            width: 55px;
+            height: 55px;
+
+            border-radius: 50%;
+
+            background: #159657;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 25px;
+        }
+
+        .patient-info {
+            text-align: left;
+        }
+
+        .small-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #66756d;
+        }
+
+        .patient-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* BOOKING TITLE */
+
+        .booking-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            margin: 25px 0;
+        }
+
+        .booking-title::before,
+        .booking-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #a6ddc1;
+        }
+
+        .booking-title span {
+            font-size: 20px;
+            font-weight: bold;
+            color: #17643e;
+        }
+
+        /* DETAIL CARDS */
+
+        .details-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 15px;
+        }
+
+        .detail-box {
+            padding: 22px 12px;
+
+            border: 1px solid #c7ead9;
+
+            border-radius: 15px;
+
+            background: #fbfffd;
+        }
+
+        .detail-icon {
+            width: 58px;
+            height: 58px;
+
+            margin: auto;
+
+            border-radius: 50%;
+
+            background: #e5f8ed;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 25px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+
+            font-weight: bold;
+
+            color: #65756c;
+
+            margin-top: 15px;
+        }
+
+        .detail-value {
+            margin-top: 8px;
+
             font-size: 18px;
-        }
 
-        .row:last-child {
-            border-bottom: none;
-        }
-
-        .label {
-            color: #60708d;
-        }
-
-        .value {
             font-weight: bold;
-            color: #17213c;
+
+            color: #17643e;
         }
 
-        .status {
+        /* BOOKING INFO */
+
+        .booking-info {
+            margin-top: 20px;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 20px;
+
+            padding: 18px;
+
+            background: #f3fcf7;
+
+            border: 1px solid #c7ead9;
+
+            border-radius: 15px;
+        }
+
+        .booking-label {
+            font-size: 12px;
+
+            font-weight: bold;
+
+            color: #66756d;
+        }
+
+        .booking-value {
+            margin-top: 7px;
+
+            font-size: 20px;
+
+            font-weight: bold;
+        }
+
+        .confirmed {
             display: inline-block;
-            background: #fff1c7;
-            color: #a85b00;
-            padding: 12px 28px;
-            border-radius: 30px;
+
+            margin-top: 7px;
+
+            padding: 8px 18px;
+
+            background: #159657;
+
+            color: white;
+
+            border-radius: 20px;
+
             font-weight: bold;
-            margin-bottom: 30px;
+        }
+
+        /* BUTTONS */
+
+        .buttons {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 15px;
+
+            margin-top: 25px;
         }
 
         .button {
-            display: inline-block;
-            padding: 14px 30px;
+            padding: 15px;
+
             border-radius: 10px;
-            background: #2864e8;
-            color: white;
+
             text-decoration: none;
-            font-size: 17px;
+
+            font-size: 16px;
+
             font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .home-btn {
+            background: #098746;
+            color: white;
+        }
+
+        .appointment-btn {
+            background: #075f35;
+            color: white;
         }
 
         .button:hover {
-            background: #1e54c8;
+            transform: translateY(-2px);
+            opacity: 0.9;
         }
+
+        /* THANK YOU */
+
+        .thank-you {
+            margin-top: 20px;
+
+            padding: 20px;
+
+            background: #f3fcf7;
+
+            border: 1px solid #c7ead9;
+
+            border-radius: 15px;
+        }
+
+        .thank-you h3 {
+            margin: 0 0 7px;
+            color: #17643e;
+        }
+
+        .thank-you p {
+            margin: 0;
+            color: #61766b;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 900px) {
+
+            .details-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .card {
+                padding: 25px 15px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-info {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
@@ -119,63 +375,224 @@
 
     <div class="card">
 
+
         <div class="success-icon">
             ✓
         </div>
 
-        <h1>Appointment Booked!</h1>
+
+        <h1>
+            Appointment Booked Successfully!
+        </h1>
+
 
         <p class="subtitle">
-            Your appointment has been successfully booked.
+            Your appointment has been successfully confirmed.
         </p>
 
-        <div class="status">
-            Confirmed
-        </div>
 
-        <div class="details">
+        <!-- PATIENT NAME -->
 
-            <div class="row">
-                <span class="label">Doctor</span>
+        <div class="patient-box">
 
-                <span class="value">
-                    {{ doctor.name }}
-                </span>
+            <div class="patient-icon">
+                👤
             </div>
 
-            <div class="row">
-                <span class="label">Department</span>
+            <div class="patient-info">
 
-                <span class="value">
+                <div class="small-label">
+                    PATIENT NAME
+                </div>
+
+                <div class="patient-name">
+                    {{ appointment.patient.name }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="booking-title">
+            <span>Booking Details</span>
+        </div>
+
+
+        <div class="details-grid">
+
+
+            <!-- DOCTOR -->
+
+            <div class="detail-box">
+
+                <div class="detail-icon">
+                    👨‍⚕️
+                </div>
+
+                <div class="detail-label">
+                    DOCTOR
+                </div>
+
+                <div class="detail-value">
+                    Dr. {{ doctor.name }}
+                </div>
+
+            </div>
+
+
+            <!-- TOKEN -->
+
+            <div class="detail-box">
+
+                <div class="detail-icon">
+                    🎟️
+                </div>
+
+                <div class="detail-label">
+                    TOKEN NUMBER
+                </div>
+
+                <div class="detail-value">
+                    #{{ appointment.token_number }}
+                </div>
+
+            </div>
+
+
+            <!-- DEPARTMENT -->
+
+            <div class="detail-box">
+
+                <div class="detail-icon">
+                    🏥
+                </div>
+
+                <div class="detail-label">
+                    DEPARTMENT
+                </div>
+
+                <div class="detail-value">
                     {{ doctor.specialization }}
-                </span>
+                </div>
+
             </div>
 
-            <div class="row">
-                <span class="label">Date</span>
 
-                <span class="value">
-                    {{ appointment.appointment_date|date:"M. d, Y" }}
-                </span>
+            <!-- DATE -->
+
+            <div class="detail-box">
+
+                <div class="detail-icon">
+                    📅
+                </div>
+
+                <div class="detail-label">
+                    APPOINTMENT DATE
+                </div>
+
+                <div class="detail-value">
+                    {{ appointment.appointment_date|date:"Y-m-d" }}
+                </div>
+
             </div>
 
-            <div class="row">
-                <span class="label">Time</span>
 
-                <span class="value">
+            <!-- TIME -->
+
+            <div class="detail-box">
+
+                <div class="detail-icon">
+                    🕒
+                </div>
+
+                <div class="detail-label">
+                    APPOINTMENT TIME
+                </div>
+
+                <div class="detail-value">
                     {{ appointment.appointment_time|time:"h:i A" }}
-                </span>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- BOOKING ID / STATUS -->
+
+        <div class="booking-info">
+
+            <div>
+
+                <div class="booking-label">
+                    BOOKING ID
+                </div>
+
+                <div class="booking-value">
+                    #HB{{ appointment.id }}
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <div class="booking-label">
+                    STATUS
+                </div>
+
+                <div class="confirmed">
+                    Confirmed
+                </div>
+
             </div>
 
         </div>
 
-        <a href="{% url 'department_list' %}" class="button">
-            Book Another Appointment
-        </a>
+
+        <!-- BUTTONS -->
+
+        <div class="buttons">
+
+            <a href="{% url 'department_list' %}"
+               class="button home-btn">
+
+                🏠 Back to Home
+
+            </a>
+
+
+            <a href="{% url 'my_appointments' %}"
+               class="button appointment-btn">
+
+                📋 My Appointments
+
+            </a>
+
+        </div>
+
+
+        <!-- THANK YOU -->
+
+        <div class="thank-you">
+
+            <h3>
+                ♥ Thank you!
+            </h3>
+
+            <p>
+                We look forward to serving you.
+            </p>
+
+        </div>
+
 
     </div>
 
 </div>
 
 </body>
+
 </html>

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -87,6 +86,26 @@
             color: #17213a;
         }
 
+        .normal-input {
+            width: 100%;
+
+            padding: 15px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+
+            margin-bottom: 20px;
+
+            outline: none;
+        }
+
+        .normal-input:focus {
+            border-color: #2563eb;
+        }
+
         .password-wrapper {
             position: relative;
 
@@ -107,12 +126,10 @@
             font-size: 16px;
 
             outline: none;
-
-            margin-bottom: 0;
         }
 
         .password-wrapper input:focus {
-            border-color: #dc2626;
+            border-color: #2563eb;
         }
 
         .show-password {
@@ -134,27 +151,7 @@
         }
 
         .show-password:hover {
-            color: #dc2626;
-        }
-
-        .normal-input {
-            width: 100%;
-
-            padding: 15px;
-
-            border: 1px solid #cbd5e1;
-
-            border-radius: 10px;
-
-            font-size: 16px;
-
-            margin-bottom: 20px;
-
-            outline: none;
-        }
-
-        .normal-input:focus {
-            border-color: #dc2626;
+            color: #2563eb;
         }
 
         .register-btn {
@@ -162,7 +159,7 @@
 
             border: none;
 
-            background: #dc2626;
+            background: #2563eb;
 
             color: white;
 
@@ -178,7 +175,7 @@
         }
 
         .register-btn:hover {
-            background: #b91c1c;
+            background: #1d4ed8;
         }
 
         .error {
@@ -187,22 +184,6 @@
             border: 1px solid #fecaca;
 
             color: #b91c1c;
-
-            padding: 12px;
-
-            border-radius: 10px;
-
-            margin-bottom: 20px;
-
-            text-align: center;
-        }
-
-        .success {
-            background: #dcfce7;
-
-            border: 1px solid #bbf7d0;
-
-            color: #166534;
 
             padding: 12px;
 
@@ -224,7 +205,7 @@
         }
 
         .login-link a {
-            color: #dc2626;
+            color: #2563eb;
 
             font-weight: bold;
 
@@ -244,7 +225,6 @@
 
 
 <div class="register-card">
-
 
     <div class="logo">
         🏥
@@ -270,21 +250,12 @@
     {% endif %}
 
 
-    {% if success %}
-
-        <div class="success">
-            {{ success }}
-        </div>
-
-    {% endif %}
-
-
     <form method="POST">
 
         {% csrf_token %}
 
 
-        <!-- NAME -->
+        <!-- FULL NAME -->
 
         <label>
             Full Name
@@ -295,7 +266,23 @@
             type="text"
             name="name"
             placeholder="Enter your full name"
-            value="{{ request.POST.name }}"
+            value="{{ name }}"
+            required
+        >
+
+
+        <!-- USERNAME -->
+
+        <label>
+            Username
+        </label>
+
+        <input
+            class="normal-input"
+            type="text"
+            name="username"
+            placeholder="Enter your username"
+            value="{{ username }}"
             required
         >
 
@@ -311,7 +298,7 @@
             type="email"
             name="email"
             placeholder="Enter your email"
-            value="{{ request.POST.email }}"
+            value="{{ email }}"
             required
         >
 
@@ -335,7 +322,6 @@
             <span
                 class="show-password"
                 onclick="togglePassword('password', this)"
-                title="Show password"
             >
                 👁️
             </span>
@@ -362,15 +348,12 @@
             <span
                 class="show-password"
                 onclick="togglePassword('confirm_password', this)"
-                title="Show password"
             >
                 👁️
             </span>
 
         </div>
 
-
-        <!-- REGISTER BUTTON -->
 
         <button
             type="submit"
@@ -398,29 +381,25 @@
 
 <script>
 
-    function togglePassword(inputId, icon) {
+function togglePassword(inputId, icon) {
 
-        const input = document.getElementById(inputId);
+    const input = document.getElementById(inputId);
 
-        if (input.type === "password") {
+    if (input.type === "password") {
 
-            input.type = "text";
+        input.type = "text";
 
-            icon.textContent = "👁";
+        icon.textContent = "🙈";
 
-            icon.title = "Hide password";
+    } else {
 
-        } else {
+        input.type = "password";
 
-            input.type = "password";
-
-            icon.textContent = "👁️";
-
-            icon.title = "Show password";
-
-        }
+        icon.textContent = "👁️";
 
     }
+
+}
 
 </script>
 

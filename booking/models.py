@@ -1,6 +1,5 @@
-
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Max
 
 from doctors.models import Doctor
 from patients.models import Patient
@@ -31,6 +30,11 @@ class Appointment(models.Model):
 
     appointment_time = models.TimeField()
 
+    token_number = models.IntegerField(
+        blank=True,
+        null=True
+    )
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -42,12 +46,14 @@ class Appointment(models.Model):
     )
 
     class Meta:
+
         ordering = [
             "appointment_date",
             "appointment_time"
         ]
 
         constraints = [
+
             models.UniqueConstraint(
                 fields=[
                     "doctor",
@@ -57,12 +63,32 @@ class Appointment(models.Model):
                 condition=~Q(status="cancelled"),
                 name="unique_active_doctor_appointment_slot"
             )
+
         ]
 
+    def save(self, *args, **kwargs):
+
+        if self.token_number is None:
+
+            last_token = Appointment.objects.filter(
+                doctor=self.doctor,
+                appointment_date=self.appointment_date
+            ).aggregate(
+                Max("token_number")
+            )["token_number__max"]
+
+            if last_token is None:
+                self.token_number = 1
+            else:
+                self.token_number = last_token + 1
+
+        super().save(*args, **kwargs)
+
+
     def __str__(self):
+
         return (
+            f"Token #{self.token_number} - "
             f"{self.patient.name} - "
-            f"Dr. {self.doctor.name} - "
-            f"{self.appointment_date} "
-            f"{self.appointment_time}"
+            f"Dr. {self.doctor.name}"
         )

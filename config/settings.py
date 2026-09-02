@@ -9,8 +9,11 @@ SECRET_KEY = 'django-insecure-^(+-(b$s^=pf294r(hdj1q9x2318i1fe6b@v2l8+!g!j6hdgg1
 
 DEBUG = True
 
-
-ALLOWED_HOSTS = [  "hospital-booking-system-m2t6.onrender.com",]
+ALLOWED_HOSTS = [
+    "hospital-booking-system-m2t6.onrender.com",
+    "127.0.0.1",
+    "localhost",
+]
 
 
 INSTALLED_APPS = [

@@ -19,110 +19,19 @@ from availability.models import DoctorSchedule, DoctorLeave
 # ============================================================
 
 def no_cache(response):
-    response["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
+    response["Cache-Control"] = (
+        "no-cache, no-store, must-revalidate"
+    )
+
     response["Pragma"] = "no-cache"
     response["Expires"] = "0"
+
     return response
 
 
 # ============================================================
-# PATIENT REGISTER
-# ============================================================
-
-def patient_register(request):
-
-    patient_id = request.session.get("patient_id")
-
-    if patient_id:
-
-        if Patient.objects.filter(id=patient_id).exists():
-            return redirect("department_list")
-
-        request.session.pop("patient_id", None)
-
-    if request.method == "POST":
-
-        name = request.POST.get("name", "").strip()
-        email = request.POST.get("email", "").strip()
-        password = request.POST.get("password", "")
-        confirm_password = request.POST.get("confirm_password", "")
-
-        context = {
-            "name": name,
-            "email": email,
-        }
-
-        if not name or not email or not password or not confirm_password:
-
-            context["error"] = "Please fill in all fields."
-
-            return no_cache(
-                render(
-                    request,
-                    "patients/register.html",
-                    context
-                )
-            )
-
-        if password != confirm_password:
-
-            context["error"] = "Passwords do not match."
-
-            return no_cache(
-                render(
-                    request,
-                    "patients/register.html",
-                    context
-                )
-            )
-
-        if len(password) < 6:
-
-            context["error"] = "Password must be at least 6 characters."
-
-            return no_cache(
-                render(
-                    request,
-                    "patients/register.html",
-                    context
-                )
-            )
-
-        if Patient.objects.filter(email=email).exists():
-
-            context["error"] = (
-                "An account with this email already exists. "
-                "Please login."
-            )
-
-            return no_cache(
-                render(
-                    request,
-                    "patients/register.html",
-                    context
-                )
-            )
-
-        patient = Patient.objects.create(
-            name=name,
-            email=email,
-            password=make_password(password),
-        )
-
-        request.session["patient_id"] = patient.id
-
-        return redirect("department_list")
-
-    response = render(
-        request,
-        "patients/register.html"
-    )
-
-    return no_cache(response)
-
-
-# ============================================================
-# HELPER — MAKE AWARE DATETIME
+# HELPER — MAKE LOCAL DATETIME
 # ============================================================
 
 def make_local_datetime(selected_date, selected_time):
@@ -139,7 +48,22 @@ def make_local_datetime(selected_date, selected_time):
 
 
 # ============================================================
-# HELPER — CHECK PARTICULAR DOCTOR AVAILABILITY
+# HELPER — GET DOCTOR SCHEDULE
+# ============================================================
+
+def get_doctor_schedule(doctor, selected_date):
+
+    day_name = selected_date.strftime("%A")
+
+    return DoctorSchedule.objects.filter(
+        doctor=doctor,
+        day=day_name,
+        is_available=True
+    ).first()
+
+
+# ============================================================
+# HELPER — CHECK DOCTOR AVAILABILITY
 # ============================================================
 
 def is_doctor_available(
@@ -148,9 +72,7 @@ def is_doctor_available(
     selected_time
 ):
 
-    # --------------------------------------------------------
     # CHECK LEAVE
-    # --------------------------------------------------------
 
     if DoctorLeave.objects.filter(
         doctor=doctor,
@@ -159,33 +81,31 @@ def is_doctor_available(
 
         return False
 
-    # --------------------------------------------------------
-    # CHECK SCHEDULE
-    # --------------------------------------------------------
 
-    day_name = selected_date.strftime("%A")
+    # GET SCHEDULE
 
-    schedule = DoctorSchedule.objects.filter(
-        doctor=doctor,
-        day=day_name,
-        is_available=True
-    ).first()
+    schedule = get_doctor_schedule(
+        doctor,
+        selected_date
+    )
 
     if not schedule:
+
         return False
 
-    # --------------------------------------------------------
+
     # CHECK WORKING TIME
-    # --------------------------------------------------------
 
     if not (
-        schedule.start_time <= selected_time < schedule.end_time
+        schedule.start_time
+        <= selected_time
+        < schedule.end_time
     ):
+
         return False
 
-    # --------------------------------------------------------
+
     # SLOT DURATION
-    # --------------------------------------------------------
 
     slot_duration = timedelta(
         minutes=schedule.slot_duration
@@ -202,16 +122,15 @@ def is_doctor_available(
 
     selected_end = selected_end_datetime.time()
 
-    # --------------------------------------------------------
-    # SLOT MUST FINISH INSIDE WORKING TIME
-    # --------------------------------------------------------
+
+    # SLOT MUST END BEFORE WORKING TIME ENDS
 
     if selected_end > schedule.end_time:
+
         return False
 
-    # --------------------------------------------------------
-    # CHECK BREAK
-    # --------------------------------------------------------
+
+    # CHECK BREAKS
 
     for doctor_break in schedule.breaks.all():
 
@@ -220,51 +139,35 @@ def is_doctor_available(
             and
             selected_end > doctor_break.break_start
         ):
+
             return False
 
-    # --------------------------------------------------------
-    # CHECK DOCTOR EXISTING BOOKING
-    # --------------------------------------------------------
 
-    already_booked = Appointment.objects.filter(
+    # ========================================================
+    # COUNT PATIENTS ALREADY BOOKED IN THIS SLOT
+    # ========================================================
+
+    booked_count = Appointment.objects.filter(
         doctor=doctor,
         appointment_date=selected_date,
         appointment_time=selected_time
     ).exclude(
         status="cancelled"
-    ).exists()
+    ).count()
 
-    if already_booked:
+
+    # MAX PATIENTS PER SLOT
+
+    if booked_count >= schedule.max_patients_per_slot:
+
         return False
+
 
     return True
 
 
 # ============================================================
-# HELPER — CHECK PATIENT SAME DATE + SAME TIME
-#
-# IMPORTANT:
-# One patient can have ONLY ONE doctor appointment
-# for the EXACT same date and time.
-# ============================================================
-
-def is_patient_slot_booked(
-    patient,
-    selected_date,
-    selected_time
-):
-
-    return Appointment.objects.filter(
-        patient=patient,
-        appointment_date=selected_date,
-        appointment_time=selected_time
-    ).exclude(
-        status="cancelled"
-    ).exists()
-
-
-# ============================================================
-# HELPER — CHECK WHOLE DEPARTMENT SLOT
+# HELPER — CHECK DEPARTMENT SLOT
 # ============================================================
 
 def is_slot_fully_booked(
@@ -278,7 +181,9 @@ def is_slot_fully_booked(
     )
 
     if not doctors.exists():
+
         return True
+
 
     for doctor in doctors:
 
@@ -287,13 +192,15 @@ def is_slot_fully_booked(
             selected_date,
             selected_time
         ):
+
             return False
+
 
     return True
 
 
 # ============================================================
-# HELPER — GENERATE AVAILABLE TIME SLOTS
+# HELPER — GENERATE AVAILABLE SLOTS
 # ============================================================
 
 def generate_available_slots(
@@ -308,17 +215,18 @@ def generate_available_slots(
     possible_times = set()
 
     now = timezone.localtime()
+
     today = now.date()
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # LOOP THROUGH DOCTORS
-    # --------------------------------------------------------
+    # ========================================================
 
     for doctor in doctors:
 
-        # ----------------------------------------------------
+
         # CHECK LEAVE
-        # ----------------------------------------------------
 
         if DoctorLeave.objects.filter(
             doctor=doctor,
@@ -327,42 +235,39 @@ def generate_available_slots(
 
             continue
 
-        # ----------------------------------------------------
+
         # GET SCHEDULE
-        # ----------------------------------------------------
 
-        day_name = selected_date.strftime("%A")
-
-        schedule = DoctorSchedule.objects.filter(
-            doctor=doctor,
-            day=day_name,
-            is_available=True
-        ).first()
+        schedule = get_doctor_schedule(
+            doctor,
+            selected_date
+        )
 
         if not schedule:
+
             continue
 
-        # ----------------------------------------------------
+
         # SLOT DURATION
-        # ----------------------------------------------------
 
         slot_duration = timedelta(
             minutes=schedule.slot_duration
         )
+
 
         current_datetime = datetime.combine(
             selected_date,
             schedule.start_time
         )
 
+
         end_datetime = datetime.combine(
             selected_date,
             schedule.end_time
         )
 
-        # ----------------------------------------------------
-        # GENERATE ALL SLOTS
-        # ----------------------------------------------------
+
+        # GENERATE SLOTS
 
         while (
             current_datetime + slot_duration
@@ -372,31 +277,34 @@ def generate_available_slots(
             current_slot = current_datetime.time()
 
             slot_end_datetime = (
-                current_datetime + slot_duration
+                current_datetime
+                + slot_duration
             )
 
             slot_end = slot_end_datetime.time()
 
-            # ------------------------------------------------
+
             # CHECK BREAK
-            # ------------------------------------------------
 
             is_break = False
+
 
             for doctor_break in schedule.breaks.all():
 
                 if (
-                    current_slot < doctor_break.break_end
+                    current_slot
+                    < doctor_break.break_end
+
                     and
-                    slot_end > doctor_break.break_start
+
+                    slot_end
+                    > doctor_break.break_start
                 ):
 
                     is_break = True
+
                     break
 
-            # ------------------------------------------------
-            # ADD SLOT
-            # ------------------------------------------------
 
             if not is_break:
 
@@ -404,21 +312,26 @@ def generate_available_slots(
                     current_slot
                 )
 
+
             current_datetime += slot_duration
 
-    # --------------------------------------------------------
+
+    # ========================================================
     # CREATE FINAL SLOT LIST
-    # --------------------------------------------------------
+    # ========================================================
 
     slots = []
 
-    for slot_time in sorted(possible_times):
 
-        # ----------------------------------------------------
-        # CHECK WHETHER SLOT IS PAST
-        # ----------------------------------------------------
+    for slot_time in sorted(
+        possible_times
+    ):
+
+
+        # CHECK PAST SLOT
 
         is_past = False
+
 
         if selected_date == today:
 
@@ -427,12 +340,13 @@ def generate_available_slots(
                 slot_time
             )
 
+
             if slot_datetime <= now:
+
                 is_past = True
 
-        # ----------------------------------------------------
-        # CHECK WHETHER SLOT IS FULLY BOOKED
-        # ----------------------------------------------------
+
+        # CHECK FULL
 
         fully_booked = is_slot_fully_booked(
             department,
@@ -440,17 +354,15 @@ def generate_available_slots(
             slot_time
         )
 
-        # ----------------------------------------------------
+
         # FINAL AVAILABILITY
-        # ----------------------------------------------------
 
-        if is_past:
+        available = (
+            not is_past
+            and
+            not fully_booked
+        )
 
-            available = False
-
-        else:
-
-            available = not fully_booked
 
         slots.append({
 
@@ -464,7 +376,166 @@ def generate_available_slots(
 
         })
 
+
     return slots
+
+
+# ============================================================
+# PATIENT REGISTER
+# ============================================================
+
+def patient_register(request):
+
+    patient_id = request.session.get(
+        "patient_id"
+    )
+
+
+    if patient_id:
+
+        if Patient.objects.filter(
+            id=patient_id
+        ).exists():
+
+            return redirect(
+                "department_list"
+            )
+
+
+        request.session.pop(
+            "patient_id",
+            None
+        )
+
+
+    if request.method == "POST":
+
+        name = request.POST.get(
+            "name",
+            ""
+        ).strip()
+
+        email = request.POST.get(
+            "email",
+            ""
+        ).strip()
+
+        password = request.POST.get(
+            "password",
+            ""
+        )
+
+        confirm_password = request.POST.get(
+            "confirm_password",
+            ""
+        )
+
+
+        context = {
+
+            "name": name,
+
+            "email": email,
+
+        }
+
+
+        if (
+            not name
+            or not email
+            or not password
+            or not confirm_password
+        ):
+
+            context["error"] = (
+                "Please fill in all fields."
+            )
+
+            return no_cache(
+                render(
+                    request,
+                    "patients/register.html",
+                    context
+                )
+            )
+
+
+        if password != confirm_password:
+
+            context["error"] = (
+                "Passwords do not match."
+            )
+
+            return no_cache(
+                render(
+                    request,
+                    "patients/register.html",
+                    context
+                )
+            )
+
+
+        if len(password) < 6:
+
+            context["error"] = (
+                "Password must be at least 6 characters."
+            )
+
+            return no_cache(
+                render(
+                    request,
+                    "patients/register.html",
+                    context
+                )
+            )
+
+
+        if Patient.objects.filter(
+            email=email
+        ).exists():
+
+            context["error"] = (
+                "An account with this email already exists."
+            )
+
+            return no_cache(
+                render(
+                    request,
+                    "patients/register.html",
+                    context
+                )
+            )
+
+
+        patient = Patient.objects.create(
+
+            name=name,
+
+            email=email,
+
+            password=make_password(
+                password
+            ),
+
+        )
+
+
+        request.session[
+            "patient_id"
+        ] = patient.id
+
+
+        return redirect(
+            "department_list"
+        )
+
+
+    return no_cache(
+        render(
+            request,
+            "patients/register.html"
+        )
+    )
 
 
 # ============================================================
@@ -473,37 +544,71 @@ def generate_available_slots(
 
 def patient_login(request):
 
-    patient_id = request.session.get("patient_id")
+    patient_id = request.session.get(
+        "patient_id"
+    )
+
 
     if patient_id:
 
-        if Patient.objects.filter(id=patient_id).exists():
-            return redirect("department_list")
+        if Patient.objects.filter(
+            id=patient_id
+        ).exists():
 
-        request.session.pop("patient_id", None)
+            return redirect(
+                "department_list"
+            )
+
+
+        request.session.pop(
+            "patient_id",
+            None
+        )
+
 
     if request.method == "POST":
 
-        name = request.POST.get("name", "").strip()
-        email = request.POST.get("email", "").strip()
-        password = request.POST.get("password", "")
+        name = request.POST.get(
+            "name",
+            ""
+        ).strip()
+
+        email = request.POST.get(
+            "email",
+            ""
+        ).strip()
+
+        password = request.POST.get(
+            "password",
+            ""
+        )
+
 
         context = {
+
             "name": name,
+
             "email": email,
+
         }
 
-        if not name or not email or not password:
 
-            context["error"] = "Please fill in all fields."
+        if (
+            not name
+            or not email
+            or not password
+        ):
 
-            return no_cache(
-                render(
-                    request,
-                    "patients/login.html",
-                    context
-                )
+            context["error"] = (
+                "Please fill in all fields."
             )
+
+            return render(
+                request,
+                "patients/login.html",
+                context
+            )
+
 
         try:
 
@@ -513,64 +618,49 @@ def patient_login(request):
 
         except Patient.DoesNotExist:
 
-            context["error"] = "Invalid email or password."
-
-            return no_cache(
-                render(
-                    request,
-                    "patients/login.html",
-                    context
-                )
-            )
-
-        if not patient.password:
-
             context["error"] = (
-                "This account does not have a password. "
-                "Please register again."
+                "Invalid email or password."
             )
 
-            return no_cache(
-                render(
-                    request,
-                    "patients/login.html",
-                    context
-                )
+            return render(
+                request,
+                "patients/login.html",
+                context
             )
+
 
         if not check_password(
             password,
             patient.password
         ):
 
-            context["error"] = "Invalid email or password."
-
-            return no_cache(
-                render(
-                    request,
-                    "patients/login.html",
-                    context
-                )
+            context["error"] = (
+                "Invalid email or password."
             )
 
-        if patient.name != name:
-
-            patient.name = name
-
-            patient.save(
-                update_fields=["name"]
+            return render(
+                request,
+                "patients/login.html",
+                context
             )
 
-        request.session["patient_id"] = patient.id
 
-        return redirect("department_list")
+        request.session[
+            "patient_id"
+        ] = patient.id
 
-    response = render(
-        request,
-        "patients/login.html"
+
+        return redirect(
+            "department_list"
+        )
+
+
+    return no_cache(
+        render(
+            request,
+            "patients/login.html"
+        )
     )
-
-    return no_cache(response)
 
 
 # ============================================================
@@ -579,21 +669,17 @@ def patient_login(request):
 
 def department_list(request):
 
-    patient_id = request.session.get("patient_id")
+    patient_id = request.session.get(
+        "patient_id"
+    )
+
 
     if not patient_id:
-        return redirect("patient_login")
 
-    if not Patient.objects.filter(
-        id=patient_id
-    ).exists():
-
-        request.session.pop(
-            "patient_id",
-            None
+        return redirect(
+            "patient_login"
         )
 
-        return redirect("patient_login")
 
     departments = (
         Doctor.objects
@@ -603,6 +689,7 @@ def department_list(request):
         )
         .distinct()
     )
+
 
     return render(
         request,
@@ -614,140 +701,123 @@ def department_list(request):
 
 
 # ============================================================
-# SELECT DATE + TIME SLOT
+# SELECT DATE AND TIME
 # ============================================================
 
 def select_datetime(request):
 
-    patient_id = request.session.get("patient_id")
+    patient_id = request.session.get(
+        "patient_id"
+    )
+
 
     if not patient_id:
-        return redirect("patient_login")
 
-    department = request.GET.get("department")
+        return redirect(
+            "patient_login"
+        )
+
+
+    department = request.GET.get(
+        "department"
+    )
+
 
     if not department:
-        return redirect("department_list")
+
+        return redirect(
+            "department_list"
+        )
+
 
     # ========================================================
-    # POST — SELECT TIME SLOT
+    # POST
     # ========================================================
 
     if request.method == "POST":
 
-        selected_date = request.POST.get("date")
-        selected_time = request.POST.get("time")
+        selected_date = request.POST.get(
+            "date"
+        )
+
+        selected_time = request.POST.get(
+            "time"
+        )
+
 
         if not selected_date or not selected_time:
 
-            response = render(
+            return render(
                 request,
                 "patients/select_datetime.html",
                 {
                     "department": department,
+
                     "selected_date": selected_date,
+
                     "slots": [],
+
                     "message": (
                         "Please select a date and time slot."
                     ),
                 }
             )
 
-            return no_cache(response)
-
-        # ----------------------------------------------------
-        # CONVERT DATE + TIME
-        # ----------------------------------------------------
 
         try:
 
-            selected_date_obj = datetime.strptime(
-                selected_date,
-                "%Y-%m-%d"
-            ).date()
+            selected_date_obj = (
+                datetime.strptime(
+                    selected_date,
+                    "%Y-%m-%d"
+                ).date()
+            )
 
-            selected_time_obj = datetime.strptime(
-                selected_time,
-                "%H:%M"
-            ).time()
+
+            selected_time_obj = (
+                datetime.strptime(
+                    selected_time,
+                    "%H:%M"
+                ).time()
+            )
+
 
         except ValueError:
 
-            response = render(
+            return render(
                 request,
                 "patients/select_datetime.html",
                 {
                     "department": department,
+
                     "selected_date": selected_date,
+
                     "slots": [],
-                    "message": "Invalid date or time.",
-                }
-            )
 
-            return no_cache(response)
-
-        now = timezone.localtime()
-        today = now.date()
-
-        # ----------------------------------------------------
-        # PAST DATE
-        # ----------------------------------------------------
-
-        if selected_date_obj < today:
-
-            response = render(
-                request,
-                "patients/select_datetime.html",
-                {
-                    "department": department,
-                    "selected_date": selected_date,
-                    "slots": [],
                     "message": (
-                        "You cannot book an appointment "
-                        "for a past date."
+                        "Invalid date or time."
                     ),
                 }
             )
 
-            return no_cache(response)
 
-        # ----------------------------------------------------
-        # PAST TIME
-        # ----------------------------------------------------
+        today = timezone.localdate()
 
-        if selected_date_obj == today:
 
-            selected_datetime = make_local_datetime(
-                selected_date_obj,
-                selected_time_obj
+        if selected_date_obj < today:
+
+            return redirect(
+                reverse(
+                    "select_datetime"
+                )
+                + "?"
+                + urlencode({
+                    "department": department
+                })
             )
 
-            if selected_datetime <= now:
 
-                slots = generate_available_slots(
-                    department,
-                    selected_date_obj
-                )
-
-                response = render(
-                    request,
-                    "patients/select_datetime.html",
-                    {
-                        "department": department,
-                        "selected_date": selected_date,
-                        "slots": slots,
-                        "message": (
-                            "You cannot book an appointment "
-                            "for a past time."
-                        ),
-                    }
-                )
-
-                return no_cache(response)
-
-        # ----------------------------------------------------
-        # FINAL AVAILABILITY CHECK
-        # ----------------------------------------------------
+        # CHECK SLOT
 
         if is_slot_fully_booked(
             department,
@@ -756,93 +826,109 @@ def select_datetime(request):
         ):
 
             return redirect(
-                reverse("select_datetime")
+                reverse(
+                    "select_datetime"
+                )
                 + "?"
                 + urlencode({
                     "department": department,
+
                     "date": selected_date,
                 })
             )
 
-        # ----------------------------------------------------
-        # GO TO DOCTOR LIST
-        # ----------------------------------------------------
 
         query_string = urlencode({
+
             "department": department,
+
             "date": selected_date,
+
             "time": selected_time,
+
         })
 
+
         return HttpResponseRedirect(
-            reverse("doctor_list")
+
+            reverse(
+                "doctor_list"
+            )
+
             + "?"
+
             + query_string
+
         )
 
+
     # ========================================================
-    # GET — SHOW DATE + TIME SLOTS
+    # GET
     # ========================================================
 
-    selected_date = request.GET.get("date")
+    selected_date = request.GET.get(
+        "date"
+    )
+
 
     slots = []
+
     message = None
+
 
     if selected_date:
 
         try:
 
-            selected_date_obj = datetime.strptime(
-                selected_date,
-                "%Y-%m-%d"
-            ).date()
+            selected_date_obj = (
+                datetime.strptime(
+                    selected_date,
+                    "%Y-%m-%d"
+                ).date()
+            )
 
-            today = timezone.localtime().date()
 
-            if selected_date_obj < today:
-
-                message = (
-                    "You cannot book an appointment "
-                    "for a past date."
-                )
-
-            else:
+            if (
+                selected_date_obj
+                >= timezone.localdate()
+            ):
 
                 slots = generate_available_slots(
                     department,
                     selected_date_obj
                 )
 
-                if not slots:
+            else:
 
-                    message = (
-                        "No time slots are available "
-                        "for this date."
-                    )
+                message = (
+                    "You cannot select a past date."
+                )
+
 
         except ValueError:
 
-            selected_date = None
-            slots = []
-            message = "Please select a valid date."
+            message = (
+                "Please select a valid date."
+            )
 
-    # ========================================================
-    # RENDER
-    # ========================================================
 
-    response = render(
-        request,
-        "patients/select_datetime.html",
-        {
-            "department": department,
-            "selected_date": selected_date,
-            "slots": slots,
-            "message": message,
-        }
+    return no_cache(
+        render(
+            request,
+            "patients/select_datetime.html",
+            {
+
+                "department": department,
+
+                "selected_date": selected_date,
+
+                "slots": slots,
+
+                "message": message,
+
+            }
+        )
     )
-
-    return no_cache(response)
 
 
 # ============================================================
@@ -851,580 +937,400 @@ def select_datetime(request):
 
 def doctor_list(request):
 
-    patient_id = request.session.get("patient_id")
+    patient_id = request.session.get(
+        "patient_id"
+    )
+
 
     if not patient_id:
-        return redirect("patient_login")
 
-    department = request.GET.get("department")
-    selected_date = request.GET.get("date")
-    selected_time = request.GET.get("time")
+        return redirect(
+            "patient_login"
+        )
+
+
+    department = request.GET.get(
+        "department"
+    )
+
+    selected_date = request.GET.get(
+        "date"
+    )
+
+    selected_time = request.GET.get(
+        "time"
+    )
+
 
     doctors = Doctor.objects.none()
 
     error_message = None
 
+
     # ========================================================
-    # POST — SELECT DOCTOR
+    # POST — BOOK APPOINTMENT
     # ========================================================
 
     if request.method == "POST":
 
-        doctor_id = request.POST.get("doctor_id")
-
-        selected_date = (
-            request.POST.get("date")
-            or selected_date
+        doctor_id = request.POST.get(
+            "doctor_id"
         )
 
-        selected_time = (
-            request.POST.get("time")
-            or selected_time
+
+        selected_date = request.POST.get(
+            "date"
         )
 
-        if not doctor_id:
 
-            error_message = "Please select a doctor."
+        selected_time = request.POST.get(
+            "time"
+        )
 
-        elif not selected_date or not selected_time:
 
-            error_message = "Date and time are missing."
+        if (
+            not doctor_id
+            or not selected_date
+            or not selected_time
+        ):
+
+            error_message = (
+                "Please select doctor, date and time."
+            )
+
 
         else:
 
             try:
 
-                selected_date_obj = datetime.strptime(
-                    selected_date,
-                    "%Y-%m-%d"
-                ).date()
+                doctor = Doctor.objects.get(
+                    id=doctor_id
+                )
 
-                selected_time_obj = datetime.strptime(
-                    selected_time,
-                    "%H:%M"
-                ).time()
 
-            except ValueError:
+                patient = Patient.objects.get(
+                    id=patient_id
+                )
 
-                error_message = "Invalid date or time."
+
+                selected_date_obj = (
+                    datetime.strptime(
+                        selected_date,
+                        "%Y-%m-%d"
+                    ).date()
+                )
+
+
+                selected_time_obj = (
+                    datetime.strptime(
+                        selected_time,
+                        "%H:%M"
+                    ).time()
+                )
+
+
+            except (
+                Doctor.DoesNotExist,
+                Patient.DoesNotExist,
+                ValueError
+            ):
+
+                error_message = (
+                    "Invalid appointment details."
+                )
+
 
             else:
 
-                now = timezone.localtime()
-                today = now.date()
+                # VERIFY DEPARTMENT
 
-                # ------------------------------------------------
-                # PAST DATE
-                # ------------------------------------------------
-
-                if selected_date_obj < today:
+                if doctor.specialization != department:
 
                     error_message = (
-                        "You cannot book an appointment "
-                        "for a past date."
+                        "Invalid doctor selection."
                     )
 
-                # ------------------------------------------------
-                # PAST TIME
-                # ------------------------------------------------
 
-                elif selected_date_obj == today:
+                # PATIENT ALREADY HAS APPOINTMENT
+                # SAME DATE + TIME
 
-                    selected_datetime = make_local_datetime(
-                        selected_date_obj,
-                        selected_time_obj
+                elif Appointment.objects.filter(
+
+                    patient=patient,
+
+                    appointment_date=selected_date_obj,
+
+                    appointment_time=selected_time_obj
+
+                ).exclude(
+
+                    status="cancelled"
+
+                ).exists():
+
+                    error_message = (
+                        "You already have an appointment "
+                        "at this date and time."
                     )
 
-                    if selected_datetime <= now:
 
-                        error_message = (
-                            "You cannot book an appointment "
-                            "for a past time."
-                        )
+                # CHECK DOCTOR SLOT
 
-                # ------------------------------------------------
-                # CONTINUE
-                # ------------------------------------------------
+                elif not is_doctor_available(
 
-                if not error_message:
+                    doctor,
+
+                    selected_date_obj,
+
+                    selected_time_obj
+
+                ):
+
+                    error_message = (
+                        "This doctor is unavailable "
+                        "for this time slot."
+                    )
+
+
+                else:
 
                     try:
 
-                        doctor = Doctor.objects.get(
-                            id=doctor_id
-                        )
+                        with transaction.atomic():
 
-                        patient = Patient.objects.get(
-                            id=patient_id
-                        )
 
-                    except Doctor.DoesNotExist:
+                            # CHECK AGAIN INSIDE TRANSACTION
+
+                            booked_count = (
+                                Appointment.objects
+                                .select_for_update()
+                                .filter(
+
+                                    doctor=doctor,
+
+                                    appointment_date=
+                                    selected_date_obj,
+
+                                    appointment_time=
+                                    selected_time_obj
+
+                                )
+                                .exclude(
+                                    status="cancelled"
+                                )
+                                .count()
+                            )
+
+
+                            schedule = get_doctor_schedule(
+
+                                doctor,
+
+                                selected_date_obj
+
+                            )
+
+
+                            if (
+                                not schedule
+                                or
+                                booked_count
+                                >=
+                                schedule.max_patients_per_slot
+                            ):
+
+                                raise IntegrityError(
+                                    "SLOT_FULL"
+                                )
+
+
+                            # PATIENT CHECK AGAIN
+
+                            patient_booked = (
+                                Appointment.objects
+                                .filter(
+
+                                    patient=patient,
+
+                                    appointment_date=
+                                    selected_date_obj,
+
+                                    appointment_time=
+                                    selected_time_obj
+
+                                )
+                                .exclude(
+
+                                    status="cancelled"
+
+                                )
+                                .exists()
+                            )
+
+
+                            if patient_booked:
+
+                                raise ValueError(
+                                    "PATIENT_BOOKED"
+                                )
+
+
+                            # CREATE APPOINTMENT
+
+                            appointment = (
+                                Appointment.objects.create(
+
+                                    patient=patient,
+
+                                    doctor=doctor,
+
+                                    appointment_date=
+                                    selected_date_obj,
+
+                                    appointment_time=
+                                    selected_time_obj,
+
+                                    status="confirmed"
+
+                                )
+                            )
+
+
+                    except ValueError:
 
                         error_message = (
-                            "Selected doctor was not found."
+                            "You already have an appointment "
+                            "at this date and time."
                         )
 
-                    except Patient.DoesNotExist:
 
-                        request.session.pop(
-                            "patient_id",
-                            None
+                    except IntegrityError:
+
+                        error_message = (
+                            "This time slot is already full."
                         )
 
-                        return redirect("patient_login")
 
                     else:
 
-                        # ----------------------------------------
-                        # VERIFY DEPARTMENT
-                        # ----------------------------------------
+                        # ====================================
+                        # SUCCESS PAGE
+                        # ====================================
 
-                        if doctor.specialization != department:
+                        return render(
 
-                            error_message = (
-                                "Invalid doctor selection."
-                            )
+                            request,
 
-                        else:
+                            "patients/booked.html",
 
-                            # ====================================
-                            # IMPORTANT PATIENT SLOT CHECK
-                            #
-                            # Same patient
-                            # +
-                            # Same date
-                            # +
-                            # Same time
-                            #
-                            # = ONLY ONE DOCTOR ALLOWED
-                            # ====================================
+                            {
 
-                            if is_patient_slot_booked(
-                                patient,
-                                selected_date_obj,
-                                selected_time_obj
-                            ):
+                                "appointment":
+                                appointment,
 
-                                error_message = (
-                                    "You already have an appointment "
-                                    "at this date and time. "
-                                    "You cannot book another doctor "
-                                    "for the same time slot."
-                                )
-
-                            # ------------------------------------
-                            # CHECK DOCTOR AVAILABILITY
-                            # ------------------------------------
-
-                            elif not is_doctor_available(
+                                "doctor":
                                 doctor,
-                                selected_date_obj,
-                                selected_time_obj
-                            ):
 
-                                error_message = (
-                                    "This doctor is already booked "
-                                    "or unavailable for this slot."
-                                )
+                            }
 
-                            # ------------------------------------
-                            # BOOK APPOINTMENT
-                            # ------------------------------------
+                        )
 
-                            else:
-
-                                try:
-
-                                    with transaction.atomic():
-
-                                        # ==================================
-                                        # LOCK PATIENT
-                                        #
-                                        # This prevents the same patient
-                                        # from creating two appointments
-                                        # at exactly the same date/time
-                                        # through simultaneous requests.
-                                        # ==================================
-
-                                        locked_patient = (
-                                            Patient.objects
-                                            .select_for_update()
-                                            .get(
-                                                id=patient.id
-                                            )
-                                        )
-
-                                        # ==================================
-                                        # CHECK PATIENT AGAIN INSIDE
-                                        # TRANSACTION
-                                        # ==================================
-
-                                        patient_already_booked = (
-                                            Appointment.objects
-                                            .filter(
-                                                patient=locked_patient,
-                                                appointment_date=selected_date_obj,
-                                                appointment_time=selected_time_obj
-                                            )
-                                            .exclude(
-                                                status="cancelled"
-                                            )
-                                            .exists()
-                                        )
-
-                                        if patient_already_booked:
-
-                                            raise ValueError(
-                                                "PATIENT_ALREADY_BOOKED"
-                                            )
-
-                                        # ==================================
-                                        # LOCK DOCTOR
-                                        # ==================================
-
-                                        locked_doctor = (
-                                            Doctor.objects
-                                            .select_for_update()
-                                            .get(
-                                                id=doctor.id
-                                            )
-                                        )
-
-                                        # ==================================
-                                        # CHECK DOCTOR SLOT AGAIN
-                                        # ==================================
-
-                                        existing_appointment = (
-                                            Appointment.objects
-                                            .select_for_update()
-                                            .filter(
-                                                doctor=locked_doctor,
-                                                appointment_date=selected_date_obj,
-                                                appointment_time=selected_time_obj
-                                            )
-                                            .first()
-                                        )
-
-                                        # ==================================
-                                        # DOCTOR SLOT ALREADY BOOKED
-                                        # ==================================
-
-                                        if (
-                                            existing_appointment
-                                            and
-                                            existing_appointment.status
-                                            != "cancelled"
-                                        ):
-
-                                            raise IntegrityError(
-                                                "DOCTOR_SLOT_BOOKED"
-                                            )
-
-                                        # ==================================
-                                        # PATIENT CHECK AGAIN
-                                        #
-                                        # Extra safety check.
-                                        # ==================================
-
-                                        patient_already_booked = (
-                                            Appointment.objects
-                                            .filter(
-                                                patient=locked_patient,
-                                                appointment_date=selected_date_obj,
-                                                appointment_time=selected_time_obj
-                                            )
-                                            .exclude(
-                                                status="cancelled"
-                                            )
-                                            .exists()
-                                        )
-
-                                        if patient_already_booked:
-
-                                            raise ValueError(
-                                                "PATIENT_ALREADY_BOOKED"
-                                            )
-
-                                        # ==================================
-                                        # REUSE CANCELLED APPOINTMENT
-                                        # ==================================
-
-                                        if existing_appointment:
-
-                                            existing_appointment.patient = (
-                                                locked_patient
-                                            )
-
-                                            existing_appointment.status = (
-                                                "confirmed"
-                                            )
-
-                                            existing_appointment.save(
-                                                update_fields=[
-                                                    "patient",
-                                                    "status",
-                                                ]
-                                            )
-
-                                        # ==================================
-                                        # CREATE NEW APPOINTMENT
-                                        # ==================================
-
-                                        else:
-
-                                            Appointment.objects.create(
-                                                patient=locked_patient,
-                                                doctor=locked_doctor,
-                                                appointment_date=selected_date_obj,
-                                                appointment_time=selected_time_obj,
-                                                status="confirmed"
-                                            )
-
-                                        # Use locked objects after
-                                        # successful transaction.
-
-                                        doctor = locked_doctor
-                                        patient = locked_patient
-
-                                except ValueError as e:
-
-                                    if str(e) == "PATIENT_ALREADY_BOOKED":
-
-                                        error_message = (
-                                            "You already have an appointment "
-                                            "at this date and time. "
-                                            "You cannot book another doctor "
-                                            "for the same time slot."
-                                        )
-
-                                    else:
-
-                                        error_message = (
-                                            "Unable to book appointment."
-                                        )
-
-                                except IntegrityError:
-
-                                    error_message = (
-                                        "This doctor's time slot "
-                                        "is already booked."
-                                    )
-
-                                else:
-
-                                    request.session[
-                                        "appointment_success"
-                                    ] = True
-
-                                    return render(
-                                        request,
-                                        "patients/doctor_list.html",
-                                        {
-                                            "doctors": Doctor.objects.none(),
-                                            "department": department,
-                                            "selected_date": selected_date,
-                                            "selected_time": selected_time,
-                                            "error_message": None,
-                                            "booked": True,
-                                            "booked_doctor": doctor,
-                                        }
-                                    )
 
     # ========================================================
-    # GET — SHOW AVAILABLE DOCTORS
+    # GET — AVAILABLE DOCTORS
     # ========================================================
 
     if (
-        request.method == "GET"
-        and department
+        department
         and selected_date
         and selected_time
     ):
 
         try:
 
-            selected_date_obj = datetime.strptime(
-                selected_date,
-                "%Y-%m-%d"
-            ).date()
-
-            selected_time_obj = datetime.strptime(
-                selected_time,
-                "%H:%M"
-            ).time()
-
-        except ValueError:
-
-            doctors = Doctor.objects.none()
-
-        else:
-
-            now = timezone.localtime()
-            today = now.date()
-
-            # ------------------------------------------------
-            # PAST DATE
-            # ------------------------------------------------
-
-            if selected_date_obj < today:
-
-                return render(
-                    request,
-                    "patients/doctor_list.html",
-                    {
-                        "doctors": Doctor.objects.none(),
-                        "department": department,
-                        "selected_date": selected_date,
-                        "selected_time": selected_time,
-                        "error_message": (
-                            "You cannot book an appointment "
-                            "for a past date."
-                        ),
-                        "booked": False,
-                        "booked_doctor": None,
-                    }
-                )
-
-            # ------------------------------------------------
-            # PAST TIME
-            # ------------------------------------------------
-
-            if selected_date_obj == today:
-
-                selected_datetime = make_local_datetime(
-                    selected_date_obj,
-                    selected_time_obj
-                )
-
-                if selected_datetime <= now:
-
-                    return render(
-                        request,
-                        "patients/doctor_list.html",
-                        {
-                            "doctors": Doctor.objects.none(),
-                            "department": department,
-                            "selected_date": selected_date,
-                            "selected_time": selected_time,
-                            "error_message": (
-                                "You cannot book an appointment "
-                                "for a past time."
-                            ),
-                            "booked": False,
-                            "booked_doctor": None,
-                        }
-                    )
-
-            # ------------------------------------------------
-            # CHECK PATIENT SAME DATE + TIME
-            #
-            # If patient already booked another doctor
-            # at this exact date/time, don't show doctors.
-            # ------------------------------------------------
-
-            try:
-
-                patient = Patient.objects.get(
-                    id=patient_id
-                )
-
-            except Patient.DoesNotExist:
-
-                request.session.pop(
-                    "patient_id",
-                    None
-                )
-
-                return redirect("patient_login")
-
-            if is_patient_slot_booked(
-                patient,
-                selected_date_obj,
-                selected_time_obj
-            ):
-
-                return render(
-                    request,
-                    "patients/doctor_list.html",
-                    {
-                        "doctors": Doctor.objects.none(),
-                        "department": department,
-                        "selected_date": selected_date,
-                        "selected_time": selected_time,
-                        "error_message": (
-                            "You already have an appointment "
-                            "at this date and time. "
-                            "You cannot book another doctor "
-                            "for the same time slot."
-                        ),
-                        "booked": False,
-                        "booked_doctor": None,
-                    }
-                )
-
-            # ------------------------------------------------
-            # GET DEPARTMENT DOCTORS
-            # ------------------------------------------------
-
-            department_doctors = Doctor.objects.filter(
-                specialization=department
+            selected_date_obj = (
+                datetime.strptime(
+                    selected_date,
+                    "%Y-%m-%d"
+                ).date()
             )
 
+
+            selected_time_obj = (
+                datetime.strptime(
+                    selected_time,
+                    "%H:%M"
+                ).time()
+            )
+
+
+            department_doctors = (
+                Doctor.objects.filter(
+                    specialization=department
+                )
+            )
+
+
             available_doctor_ids = []
+
 
             for doctor in department_doctors:
 
                 if is_doctor_available(
+
                     doctor,
+
                     selected_date_obj,
+
                     selected_time_obj
+
                 ):
 
                     available_doctor_ids.append(
+
                         doctor.id
+
                     )
 
+
             doctors = Doctor.objects.filter(
+
                 id__in=available_doctor_ids
+
             )
 
-            # ------------------------------------------------
-            # ALL DOCTORS BOOKED
-            # ------------------------------------------------
 
-            if not doctors.exists():
+        except ValueError:
 
-                return render(
-                    request,
-                    "patients/doctor_list.html",
-                    {
-                        "doctors": Doctor.objects.none(),
-                        "department": department,
-                        "selected_date": selected_date,
-                        "selected_time": selected_time,
-                        "error_message": None,
-                        "booked": False,
-                        "slot_fully_booked": True,
-                        "booked_doctor": None,
-                    }
-                )
+            error_message = (
+                "Invalid date or time."
+            )
+
 
     # ========================================================
-    # RENDER DOCTOR PAGE
+    # RENDER DOCTOR LIST
     # ========================================================
 
     return render(
+
         request,
+
         "patients/doctor_list.html",
+
         {
+
             "doctors": doctors,
+
             "department": department,
+
             "selected_date": selected_date,
+
             "selected_time": selected_time,
+
             "error_message": error_message,
-            "booked": False,
-            "booked_doctor": None,
+
         }
+
     )
 
 
@@ -1434,37 +1340,54 @@ def doctor_list(request):
 
 def my_appointments(request):
 
-    patient_id = request.session.get("patient_id")
+    patient_id = request.session.get(
+        "patient_id"
+    )
+
 
     if not patient_id:
-        return redirect("patient_login")
+
+        return redirect(
+            "patient_login"
+        )
+
 
     patient = get_object_or_404(
+
         Patient,
+
         id=patient_id
+
     )
+
 
     appointments = (
         Appointment.objects
-        .filter(patient=patient)
+        .filter(
+            patient=patient
+        )
         .order_by(
+
             "-appointment_date",
+
             "-appointment_time"
+
         )
     )
 
-    success = request.session.pop(
-        "appointment_success",
-        False
-    )
 
     return render(
+
         request,
+
         "patients/my_appointments.html",
+
         {
+
             "appointments": appointments,
-            "success": success,
+
         }
+
     )
 
 
@@ -1477,31 +1400,43 @@ def cancel_appointment(
     appointment_id
 ):
 
-    patient_id = request.session.get("patient_id")
-
-    if not patient_id:
-        return redirect("patient_login")
-
-    if request.method != "POST":
-        return redirect("my_appointments")
-
-    appointment = get_object_or_404(
-        Appointment,
-        id=appointment_id,
-        patient_id=patient_id
+    patient_id = request.session.get(
+        "patient_id"
     )
 
-    if appointment.status == "cancelled":
+
+    if not patient_id:
+
+        return redirect(
+            "patient_login"
+        )
+
+
+    if request.method != "POST":
 
         return redirect(
             "my_appointments"
         )
 
+
+    appointment = get_object_or_404(
+
+        Appointment,
+
+        id=appointment_id,
+
+        patient_id=patient_id
+
+    )
+
+
     appointment.status = "cancelled"
+
 
     appointment.save(
         update_fields=["status"]
     )
+
 
     return redirect(
         "my_appointments"
@@ -1516,4 +1451,6 @@ def patient_logout(request):
 
     request.session.flush()
 
-    return redirect("home")
+    return redirect(
+        "home"
+    )

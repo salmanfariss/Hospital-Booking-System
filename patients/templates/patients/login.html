@@ -207,6 +207,8 @@
             cursor: pointer;
 
             margin-top: 5px;
+
+            font-weight: bold;
         }
 
         .login-btn:hover {
@@ -257,26 +259,31 @@
 
 </head>
 
+
 <body>
 
 <div class="login-container">
 
     <div class="login-card">
 
+
         <div class="logo">
             MediCare
         </div>
+
 
         <div class="icon">
             👤
         </div>
 
+
         <h1>
             Patient Login
         </h1>
 
+
         <p class="subtitle">
-            Enter your details to continue and book your appointment.
+            Enter your username and password to continue and book your appointment.
         </p>
 
 
@@ -294,36 +301,18 @@
             {% csrf_token %}
 
 
-            <!-- NAME -->
+            <!-- USERNAME -->
 
             <div class="form-group">
 
                 <label>
-                    Your Name
+                    Username
                 </label>
 
                 <input
                     type="text"
-                    name="name"
-                    placeholder="Enter your name"
-                    required
-                >
-
-            </div>
-
-
-            <!-- EMAIL -->
-
-            <div class="form-group">
-
-                <label>
-                    Email Address
-                </label>
-
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter your email"
+                    name="username"
+                    placeholder="Enter your username"
                     required
                 >
 
@@ -366,7 +355,7 @@
                 type="submit"
                 class="login-btn"
             >
-                Continue to Doctors →
+                Login →
             </button>
 
         </form>
@@ -390,6 +379,7 @@
             ← Back to Home
         </a>
 
+
     </div>
 
 </div>
@@ -410,7 +400,7 @@ function togglePassword() {
 
         password.type = "text";
 
-        button.textContent = " 👁️";
+        button.textContent = "🙈";
 
     } else {
 
@@ -423,6 +413,7 @@ function togglePassword() {
 }
 
 </script>
+
 
 </body>
 
